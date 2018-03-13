@@ -9,6 +9,10 @@
 namespace HeimrichHannot\AjaxBundle\Manager;
 
 use Contao\System;
+use HeimrichHannot\AjaxBundle\Exception\InvalidAjaxActException;
+use HeimrichHannot\AjaxBundle\Exception\InvalidAjaxGroupException;
+use HeimrichHannot\AjaxBundle\Exception\InvalidAjaxTokenException;
+use HeimrichHannot\AjaxBundle\Exception\NoAjaxActionWithinGroupException;
 use HeimrichHannot\AjaxBundle\Response\Response;
 use HeimrichHannot\AjaxBundle\Response\ResponseError;
 
@@ -72,28 +76,24 @@ class AjaxManager
             }
 
             /** @var AjaxActionManager */
-            $objAction = self::getActiveAction($group, $action);
+            $objAction = $this->getActiveAction($group, $action);
 
             if ($objAction === static::AJAX_ERROR_INVALID_GROUP) {
-                $objResponse = new ResponseError('Invalid ajax group.');
-                $objResponse->send();
-                exit;
+                $this->sendResponseError('Invalid ajax group.');
+                throw new InvalidAjaxGroupException('Invalid ajax group.');
             }
 
             if ($objAction === static::AJAX_ERROR_NO_AVAILABLE_ACTIONS) {
-                $objResponse = new ResponseError('No available ajax actions within given group.');
-                $objResponse->send();
-                exit;
+                $this->sendResponseError('No available ajax actions within given group.');
+                throw new NoAjaxActionWithinGroupException('No available ajax actions within given group.');
             }
 
             if ($objAction === static::AJAX_ERROR_INVALID_ACTION) {
-                $objResponse = new ResponseError('Invalid ajax act.');
-                $objResponse->send();
-                exit;
+                $this->sendResponseError('Invalid ajax act.');
+                throw new InvalidAjaxActException('Invalid ajax act.');
             } elseif ($objAction === static::AJAX_ERROR_INVALID_TOKEN) {
-                $objResponse = new ResponseError('Invalid ajax token.');
-                $objResponse->send();
-                exit;
+                $this->sendResponseError('Invalid ajax token.');
+                throw new InvalidAjaxTokenException('Invalid ajax token.');
             }
 
             if (null !== $objAction) {
@@ -199,10 +199,10 @@ class AjaxManager
      */
     public function setRequestTokenExpired()
     {
-        \RequestToken::initialize();
+        $token = System::getContainer()->get('contao.csrf.token_manager')->getToken(System::getContainer()->getParameter('contao.csrf_token_name'))->getValue();
         $_POST['REQUEST_TOKEN_EXPIRED'] = true;
-        $_POST['REQUEST_TOKEN'] = \RequestToken::get();
-        System::getContainer()->get('huh.request')->setPost('REQUEST_TOKEN', \RequestToken::get());
+        $_POST['REQUEST_TOKEN'] = $token;
+        System::getContainer()->get('huh.request')->setPost('REQUEST_TOKEN', $token);
         System::getContainer()->get('huh.request')->setPost('REQUEST_TOKEN_EXPIRED', true);
     }
 
@@ -214,5 +214,14 @@ class AjaxManager
     public function isRequestTokenExpired()
     {
         return System::getContainer()->get('huh.utils.container')->isFrontend() && System::getContainer()->get('huh.request')->isXmlHttpRequest() && System::getContainer()->get('huh.request')->getPost('REQUEST_TOKEN_EXPIRED');
+    }
+
+    /**
+     * @param string $message
+     */
+    public function sendResponseError(string $message): void
+    {
+        $objResponse = new ResponseError($message);
+        $objResponse->send();
     }
 }

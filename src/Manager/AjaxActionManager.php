@@ -12,6 +12,7 @@ use Contao\Controller;
 use Contao\PageModel;
 use Contao\System;
 use HeimrichHannot\AjaxBundle\Response\ResponseError;
+use Symfony\Component\DependencyInjection\Exception\BadMethodCallException;
 
 class AjaxActionManager
 {
@@ -46,7 +47,7 @@ class AjaxActionManager
      */
     public function removeAjaxParametersFromUrl(string $url)
     {
-        return System::getContainer()->get('huh.utils.url')->removeQueryString(System::getContainer()->get('huh.utils.class')->getConstantsByPrefixes('HeimrichHannot\AjaxBundle\Backend\AjaxManager', ['AJAX_ATTR']), $url);
+        return System::getContainer()->get('huh.utils.url')->removeQueryString(System::getContainer()->get('huh.utils.class')->getConstantsByPrefixes('HeimrichHannot\AjaxBundle\Manager\AjaxManager', ['AJAX_ATTR']), $url);
     }
 
     /**
@@ -69,7 +70,7 @@ class AjaxActionManager
             $url = $keepParams ? null : System::getContainer()->get('contao.framework')->getAdapter(Controller::class)->generateFrontendUrl($objPage->row(), null, null, true);
         }
 
-        $url = System::getContainer()->get('huh.utils.url')->addQueryString(http_build_query(static::getParams($group, $action), '', '&'), $url);
+        $url = System::getContainer()->get('huh.utils.url')->addQueryString(http_build_query($this->getParams($group, $action), '', '&'), $url);
         $url = System::getContainer()->get('huh.utils.url')->addQueryString(http_build_query($attributes, '', '&'), $url);
 
         return $url;
@@ -92,7 +93,7 @@ class AjaxActionManager
             $arrParams[AjaxManager::AJAX_ATTR_ACT] = $action;
         }
 
-        $arrConfig = $GLOBALS['AJAX'][$group]['actions'][$action];
+        $arrConfig = isset($GLOBALS['AJAX'][$group]['actions'][$action]) ? $GLOBALS['AJAX'][$group]['actions'][$action] : null;
 
         if ($arrConfig && $arrConfig['csrf_protection']) {
             $strToken = System::getContainer()->get('huh.request')->getGet(AjaxManager::AJAX_ATTR_TOKEN);
@@ -118,13 +119,13 @@ class AjaxActionManager
         if (null === $objContext) {
             $objResponse = new ResponseError('Bad Request, context not set.');
             $objResponse->send();
-            exit;
+            throw new \Exception('Bad Request, context not set.');
         }
 
         if (!method_exists($objContext, $this->strAction)) {
             $objResponse = new ResponseError('Bad Request, ajax method does not exist within context.');
             $objResponse->send();
-            exit;
+            throw new BadMethodCallException('Bad Request, ajax method does not exist within context.');
         }
 
         $reflection = new \ReflectionMethod($objContext, $this->strAction);
@@ -132,7 +133,7 @@ class AjaxActionManager
         if (!$reflection->isPublic()) {
             $objResponse = new ResponseError('Bad Request, the called method is not public.');
             $objResponse->send();
-            exit;
+            throw new BadMethodCallException('Bad Request, the called method is not public.');
         }
 
         return call_user_func_array([$objContext, $this->strAction], $this->getArguments());
@@ -144,8 +145,8 @@ class AjaxActionManager
     protected function getArguments()
     {
         $arrArgumentValues = [];
-        $arrArguments = $this->arrAttributes['arguments'];
-        $arrOptional = is_array($this->arrAttributes['optional']) ? $this->arrAttributes['optional'] : [];
+        $arrArguments = isset($this->arrAttributes['arguments']) ? $this->arrAttributes['arguments'] : [];
+        $arrOptional = isset($this->arrAttributes['optional']) ? $this->arrAttributes['optional'] : [];
 
         $arrCurrentArguments = System::getContainer()->get('huh.request')->isMethod('POST') ? System::getContainer()->get('huh.request')->request->all() : System::getContainer()->get('huh.request')->query->all();
 

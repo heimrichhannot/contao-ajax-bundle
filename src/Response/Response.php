@@ -139,7 +139,7 @@ abstract class Response extends \Symfony\Component\HttpFoundation\JsonResponse i
         // error messages my occur, due to exit and \FrontendUser::destruct does no longer have a valid \Database instance
         ini_set('display_errors', 0);
 
-        exit;
+        throw new AjaxExitException('exit');
     }
 
     /**
