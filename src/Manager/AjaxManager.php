@@ -204,8 +204,6 @@ class AjaxManager
         $_POST['REQUEST_TOKEN'] = \RequestToken::get();
         System::getContainer()->get('huh.request')->setPost('REQUEST_TOKEN', \RequestToken::get());
         System::getContainer()->get('huh.request')->setPost('REQUEST_TOKEN_EXPIRED', true);
-        System::getContainer()->get('huh.request')->getInstance()->request->set('REQUEST_TOKEN', \RequestToken::get());
-        System::getContainer()->get('huh.request')->getInstance()->request->set('REQUEST_TOKEN_EXPIRED', true);
     }
 
     /**

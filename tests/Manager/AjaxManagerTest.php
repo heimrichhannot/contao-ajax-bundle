@@ -8,11 +8,15 @@
 
 namespace HeimrichHannot\AjaxBundle\Tests\Manager;
 
+use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\System;
 use Contao\TestCase\ContaoTestCase;
 use HeimrichHannot\AjaxBundle\Manager\AjaxActionManager;
 use HeimrichHannot\AjaxBundle\Manager\AjaxManager;
 use HeimrichHannot\AjaxBundle\Manager\AjaxTokenManager;
+use HeimrichHannot\RequestBundle\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestMatcher;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 
@@ -24,7 +28,7 @@ class AjaxManagerTest extends ContaoTestCase
 
         $container = $this->mockContainer();
 
-        $request = $this->mockAdapter(['isXmlHttpRequest', 'getGet', 'getSession', 'hasSession']);
+        $request = $this->mockAdapter(['isXmlHttpRequest', 'getGet', 'getSession', 'hasSession', 'getPost']);
         $request->method('isXmlHttpRequest')->willReturn(true);
         $request->method('getGet')->willReturnCallback(function ($param) {
             switch ($param) {
@@ -38,8 +42,13 @@ class AjaxManagerTest extends ContaoTestCase
         });
         $request->method('getSession')->willReturn(new Session(new MockArraySessionStorage()));
         $request->method('hasSession')->willReturn(true);
+        $request->method('getPost')->willReturn(true);
+
+        $utilsContainer = $this->mockAdapter(['isFrontend']);
+        $utilsContainer->method('isFrontend')->willReturn(true);
 
         $container->set('huh.request', $request);
+        $container->set('huh.utils.container', $utilsContainer);
         System::setContainer($container);
 
         $container->set('huh.ajax.token', new AjaxTokenManager());
@@ -150,5 +159,38 @@ class AjaxManagerTest extends ContaoTestCase
 
         System::setContainer($container);
         $this->assertNull($manager->getActiveAction('ag', 'aa'));
+    }
+
+    public function testSetRequestTokenExpired()
+    {
+        $container = System::getContainer();
+        $requestStack = new RequestStack();
+        $requestStack->push(new \Symfony\Component\HttpFoundation\Request());
+
+        $backendMatcher = new RequestMatcher('/contao', 'test.com', null, ['192.168.1.0']);
+        $frontendMatcher = new RequestMatcher('/index', 'test.com', null, ['192.168.1.0']);
+
+        $scopeMatcher = new ScopeMatcher($backendMatcher, $frontendMatcher);
+
+        $tokenAdapter = $this->mockAdapter(['getToken', 'getValue']);
+        $tokenAdapter->method('getToken')->willReturnSelf();
+        $tokenAdapter->method('getValue')->willReturn('token');
+
+        $request = new Request($this->mockContaoFramework(), $requestStack, $scopeMatcher);
+        $container->set('huh.request', $request);
+        $container->set('contao.csrf.token_manager', $tokenAdapter);
+        System::setContainer($container);
+
+        $manager = new AjaxManager();
+        $manager->setRequestTokenExpired();
+
+        $this->assertTrue($request->get('REQUEST_TOKEN_EXPIRED'));
+        $this->assertSame('token', $request->get('REQUEST_TOKEN'));
+    }
+
+    public function testUsRequestTokenExpired()
+    {
+        $manager = new AjaxManager();
+        $this->assertTrue($manager->isRequestTokenExpired());
     }
 }
