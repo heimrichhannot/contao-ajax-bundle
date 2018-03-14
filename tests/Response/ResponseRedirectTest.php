@@ -8,12 +8,26 @@
 
 namespace HeimrichHannot\AjaxBundle\Tests\Response;
 
+use Contao\System;
 use Contao\TestCase\ContaoTestCase;
 use HeimrichHannot\AjaxBundle\Response\Response;
 use HeimrichHannot\AjaxBundle\Response\ResponseRedirect;
 
 class ResponseRedirectTest extends ContaoTestCase
 {
+    public function setUp()
+    {
+        parent::setUp();
+
+        $token = $this->mockAdapter(['getActiveToken', 'create']);
+        $token->method('getActiveToken')->willReturn('token');
+        $token->method('create')->willReturn('token');
+
+        $container = $this->mockContainer();
+        $container->set('huh.ajax.token', $token);
+        System::setContainer($container);
+    }
+
     public function testResponse()
     {
         $response = new ResponseRedirect('test');

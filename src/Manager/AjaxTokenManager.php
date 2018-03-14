@@ -67,11 +67,11 @@ class AjaxTokenManager
     /**
      * Remove a used token.
      *
-     * @param $strToken
+     * @param $token
      */
-    public function remove($strToken)
+    public function remove(string $token): void
     {
-        System::getContainer()->get('huh.utils.array')->removeValue($strToken, $this->tokens);
+        System::getContainer()->get('huh.utils.array')->removeValue($token, $this->tokens);
 
         $this->session->set(static::SESSION_KEY, $this->tokens);
     }
@@ -110,14 +110,14 @@ class AjaxTokenManager
     /**
      * Validate a token.
      *
-     * @param string $strToken The ajax token
+     * @param string $token The ajax token
      *
      * @return bool True if the token matches the stored one
      */
-    public function validate($strToken)
+    public function validate(string $token): bool
     {
         // Validate the token
-        if ('' !== $strToken && in_array($strToken, $this->tokens, true)) {
+        if ('' !== $token && in_array($token, $this->tokens, true)) {
             return true;
         }
 
