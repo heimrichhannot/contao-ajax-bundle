@@ -9,6 +9,7 @@
 namespace HeimrichHannot\AjaxBundle\Backend;
 
 use Contao\System;
+use Symfony\Component\Security\Csrf\CsrfToken;
 
 class Hooks
 {
@@ -26,7 +27,7 @@ class Hooks
         }
 
         // improved REQUEST_TOKEN handling within front end mode
-        if (System::getContainer()->get('huh.request')->isMethod('POST') && !\RequestToken::validate(System::getContainer()->get('huh.request')->getPost('REQUEST_TOKEN'))) {
+        if (System::getContainer()->get('huh.request')->isMethod('POST') && !System::getContainer()->get('contao.csrf.token_manager')->isTokenValid(new CsrfToken(System::getContainer()->getParameter('contao.csrf_token_name'), System::getContainer()->get('huh.request')->getPost('REQUEST_TOKEN')))) {
             System::getContainer()->get('huh.ajax')->setRequestTokenExpired();
         }
     }
