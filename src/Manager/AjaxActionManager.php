@@ -11,7 +11,7 @@ namespace HeimrichHannot\AjaxBundle\Manager;
 use Contao\Controller;
 use Contao\PageModel;
 use Contao\System;
-use HeimrichHannot\AjaxBundle\Response\ResponseError;
+use HeimrichHannot\AjaxBundle\Exception\AjaxExitException;
 use Symfony\Component\DependencyInjection\Exception\BadMethodCallException;
 
 class AjaxActionManager
@@ -117,22 +117,19 @@ class AjaxActionManager
         $objItem = null;
 
         if (null === $objContext) {
-            $objResponse = new ResponseError('Bad Request, context not set.');
-            $objResponse->send();
+            System::getContainer()->get('huh.ajax')->sendResponseError('Bad Request, context not set.');
             throw new \Exception('Bad Request, context not set.');
         }
 
         if (!method_exists($objContext, $this->strAction)) {
-            $objResponse = new ResponseError('Bad Request, ajax method does not exist within context.');
-            $objResponse->send();
+            System::getContainer()->get('huh.ajax')->sendResponseError('Bad Request, ajax method does not exist within context.');
             throw new BadMethodCallException('Bad Request, ajax method does not exist within context.');
         }
 
         $reflection = new \ReflectionMethod($objContext, $this->strAction);
 
         if (!$reflection->isPublic()) {
-            $objResponse = new ResponseError('Bad Request, the called method is not public.');
-            $objResponse->send();
+            System::getContainer()->get('huh.ajax')->sendResponseError('Bad Request, the called method is not public.');
             throw new BadMethodCallException('Bad Request, the called method is not public.');
         }
 
@@ -157,9 +154,8 @@ class AjaxActionManager
             }
 
             if (count(preg_grep('/'.$argument.'/i', $arrOptional)) < 1 && count(preg_grep('/'.$argument.'/i', array_keys($arrCurrentArguments))) < 1) {
-                $objResponse = new ResponseError('Bad Request, missing argument '.$argument);
-                $objResponse->send();
-                exit;
+                System::getContainer()->get('huh.ajax')->sendResponseError('Bad Request, missing argument '.$argument);
+                throw new AjaxExitException('Bad Request, missing argument '.$argument);
             }
 
             $varValue = System::getContainer()->get('huh.request')->isMethod('POST') ? System::getContainer()->get('huh.request')->getPost($argument) : System::getContainer()->get('huh.request')->getGet($argument);

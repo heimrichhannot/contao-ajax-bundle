@@ -58,7 +58,10 @@ class ResponseData implements \JsonSerializable
         $this->html = $html;
     }
 
-    public function jsonSerialize()
+    /**
+     * @return array
+     */
+    public function jsonSerialize(): array
     {
         return get_object_vars($this);
     }

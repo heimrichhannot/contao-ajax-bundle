@@ -254,7 +254,6 @@ class AjaxManagerTest extends ContaoTestCase
         $tokenAdapter->method('getValue')->willReturn('token');
 
         $request = new Request($this->mockContaoFramework(), $requestStack, $scopeMatcher);
-        $request->headers->set('X-Requested-With', 'XMLHttpRequest');
         $request->setGet(AjaxManager::AJAX_ATTR_ACT, 'getResponse');
         $request->setGet(AjaxManager::AJAX_ATTR_TOKEN, 'ag');
         $request->setGet(AjaxManager::AJAX_ATTR_SCOPE, 'ajax');
@@ -268,6 +267,11 @@ class AjaxManagerTest extends ContaoTestCase
         $container->set('huh.ajax.token', $token);
         System::setContainer($container);
 
+        // is no xml http request
+        $manager->runActiveAction('ag', 'getResponse', $this);
+
+        // is xml http request
+        $request->headers->set('X-Requested-With', 'XMLHttpRequest');
         $GLOBALS['AJAX'] = ['ag' => ['actions' => ['getResponse' => ['csrf_protection' => true]]]];
         try {
             ob_start();
