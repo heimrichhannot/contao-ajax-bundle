@@ -279,6 +279,19 @@ class AjaxManagerTest extends ContaoTestCase
         } catch (AjaxExitException $exception) {
             $this->assertSame('exit', $exception->getMessage());
         }
+
+        $GLOBALS['TL_HOOKS']['beforeAjaxAction'] = [
+            'first' => [self::class, 'beforeAjaxAction'],
+            function ($group, $action, $objContext) {
+            },
+        ];
+
+        try {
+            ob_start();
+            $manager->runActiveAction('ag', 'getResponse', $this);
+        } catch (AjaxExitException $exception) {
+            $this->assertSame('exit', $exception->getMessage());
+        }
     }
 
     /**
@@ -287,5 +300,16 @@ class AjaxManagerTest extends ContaoTestCase
     public function getResponse()
     {
         return new ResponseSuccess();
+    }
+
+    /**
+     * this is the callback function for testing tl_hooks beforeAjaxAction.
+     *
+     * @param $group
+     * @param $action
+     * @param $objContext
+     */
+    public function beforeAjaxAction($group, $action, $objContext)
+    {
     }
 }
