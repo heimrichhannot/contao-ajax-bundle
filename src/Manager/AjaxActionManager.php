@@ -32,7 +32,7 @@ class AjaxActionManager
      * @param array  $attributes
      * @param null   $token
      */
-    public function __construct(string $group, string $action, array $attributes = [], $token = null)
+    public function __construct(string $group = '', string $action = '', array $attributes = [], $token = null)
     {
         $this->strGroup = $group;
         $this->strAction = $action;

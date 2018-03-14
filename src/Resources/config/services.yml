@@ -8,3 +8,6 @@ services:
   huh.ajax.token:
     class: HeimrichHannot\AjaxBundle\Manager\AjaxTokenManager
     public: true
+  huh.ajax.action:
+    class: HeimrichHannot\AjaxBundle\Manager\AjaxActionManager
+    public: true
