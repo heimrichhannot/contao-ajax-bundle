@@ -6,7 +6,7 @@
  * @license LGPL-3.0-or-later
  */
 
-namespace HeimrichHannot\UtilsBundle\Tests\DependencyInjection;
+namespace HeimrichHannot\AjaxBundle\Tests\DependencyInjection;
 
 use Contao\TestCase\ContaoTestCase;
 use HeimrichHannot\AjaxBundle\DependencyInjection\AjaxExtension;

@@ -6,7 +6,7 @@
  * @license LGPL-3.0-or-later
  */
 
-namespace HeimrichHannot\BeExplanationBundle\Tests;
+namespace HeimrichHannot\AjaxBundle\Tests;
 
 use HeimrichHannot\AjaxBundle\DependencyInjection\AjaxExtension;
 use HeimrichHannot\AjaxBundle\HeimrichHannotContaoAjaxBundle;

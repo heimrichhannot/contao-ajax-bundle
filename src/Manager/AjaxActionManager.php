@@ -8,7 +8,6 @@
 
 namespace HeimrichHannot\AjaxBundle\Manager;
 
-use Contao\Controller;
 use Contao\PageModel;
 use Contao\System;
 use HeimrichHannot\AjaxBundle\Exception\AjaxExitException;
@@ -61,13 +60,11 @@ class AjaxActionManager
      */
     public function generateUrl(string $group, string $action = null, array $attributes = [], bool $keepParams = true, string $url = null)
     {
-        /*
-         * @var PageModel $objPage
-         */
+        /* @var PageModel $objPage */
         global $objPage;
 
         if (null === $url) {
-            $url = $keepParams ? null : System::getContainer()->get('contao.framework')->getAdapter(Controller::class)->generateFrontendUrl($objPage->row(), null, null, true);
+            $url = $keepParams ? null : $objPage->getFrontendUrl();
         }
 
         $url = System::getContainer()->get('huh.utils.url')->addQueryString(http_build_query($this->getParams($group, $action), '', '&'), $url);
