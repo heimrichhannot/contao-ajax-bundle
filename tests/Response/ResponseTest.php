@@ -52,6 +52,10 @@ class ResponseTest extends ContaoTestCase
         $this->assertInstanceOf(\stdClass::class, $result);
         $this->assertSame('message', $result->message);
         $this->assertSame('token', $result->token);
+
+        // set url
+        $response->setUrl('url');
+        $this->assertArrayHasKey('url', $response->getResult()->getData());
     }
 
     public function testSend()
