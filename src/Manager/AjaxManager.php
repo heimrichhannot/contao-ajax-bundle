@@ -187,7 +187,7 @@ class AjaxManager
         $arrAttributes = $arrActions[$strAct];
 
         // ajax request token check
-        if (!isset($arrAttributes['csrf_protection']) && (!$strToken || !System::getContainer()->get('huh.ajax.token')->validate($strToken))) {
+        if (isset($arrAttributes['csrf_protection']) && $arrAttributes['csrf_protection'] && (!$strToken || !System::getContainer()->get('huh.ajax.token')->validate($strToken))) {
             return static::AJAX_ERROR_INVALID_TOKEN;
         }
 

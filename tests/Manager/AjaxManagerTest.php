@@ -153,10 +153,10 @@ class AjaxManagerTest extends ContaoTestCase
         $GLOBALS['AJAX'] = ['ag' => ['actions' => []]];
         $this->assertSame(3, $manager->getActiveAction('ag', 'getTrue'));
 
-        $GLOBALS['AJAX'] = ['ag' => ['actions' => ['getTrue' => 'action']]];
+        $GLOBALS['AJAX'] = ['ag' => ['actions' => ['getTrue' => ['csrf_protection' => true]]]];
         $this->assertSame(4, $manager->getActiveAction('ag', 'getTrue'));
 
-        $GLOBALS['AJAX'] = ['ag' => ['actions' => ['getTrue' => ['csrf_protection' => true]]]];
+        $GLOBALS['AJAX'] = ['ag' => ['actions' => ['getTrue' => ['csrf_protection' => false]]]];
         $this->assertInstanceOf(AjaxActionManager::class, $manager->getActiveAction('ag', 'getTrue'));
 
         $container = System::getContainer();
@@ -235,8 +235,8 @@ class AjaxManagerTest extends ContaoTestCase
         }
 
         try {
-            $GLOBALS['AJAX'] = ['ag' => ['actions' => ['getTrue' => 'action']]];
-            $manager->runActiveAction('ag', 'getTrue', 'test');
+            $GLOBALS['AJAX'] = ['ag' => ['actions' => ['getResponse' => ['csrf_protection' => true]]]];
+            $manager->runActiveAction('ag', 'getResponse', 'test');
         } catch (InvalidAjaxTokenException $exception) {
             $this->assertSame('Invalid ajax token.', $exception->getMessage());
         }
@@ -259,9 +259,10 @@ class AjaxManagerTest extends ContaoTestCase
         $request->setGet(AjaxManager::AJAX_ATTR_SCOPE, 'ajax');
         $request->setGet(AjaxManager::AJAX_ATTR_GROUP, 'ag');
 
-        $token = $this->mockAdapter(['getActiveToken', 'remove', 'create']);
+        $token = $this->mockAdapter(['getActiveToken', 'remove', 'create', 'validate']);
         $token->method('getActiveToken')->willReturn('token');
         $token->method('create')->willReturn('token');
+        $token->method('validate')->willReturn(true);
         $container = System::getContainer();
         $container->set('huh.request', $request);
         $container->set('huh.ajax.token', $token);
