@@ -235,8 +235,8 @@ class AjaxManagerTest extends ContaoTestCase
         }
 
         try {
-            $GLOBALS['AJAX'] = ['ag' => ['actions' => ['getResponse' => ['csrf_protection' => true]]]];
-            $manager->runActiveAction('ag', 'getResponse', 'test');
+            $GLOBALS['AJAX'] = ['ag' => ['actions' => ['getTrue' => ['csrf_protection' => true]]]];
+            $manager->runActiveAction('ag', 'getTrue', 'test');
         } catch (InvalidAjaxTokenException $exception) {
             $this->assertSame('Invalid ajax token.', $exception->getMessage());
         }
