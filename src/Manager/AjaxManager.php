@@ -199,7 +199,7 @@ class AjaxManager
      */
     public function setRequestTokenExpired()
     {
-        $token = System::getContainer()->get('contao.csrf.token_manager')->getToken(System::getContainer()->getParameter('contao.csrf_token_name'))->getValue();
+        $token = System::getContainer()->get('security.csrf.token_manager')->getToken(System::getContainer()->getParameter('contao.csrf_token_name'))->getValue();
         $_POST['REQUEST_TOKEN_EXPIRED'] = true;
         $_POST['REQUEST_TOKEN'] = $token;
         System::getContainer()->get('huh.request')->setPost('REQUEST_TOKEN', $token);

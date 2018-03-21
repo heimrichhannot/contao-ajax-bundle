@@ -52,7 +52,7 @@ class HooksTest extends ContaoTestCase
         $container->setParameter('contao.csrf_token_name', 'token');
         $container->set('huh.request', $request);
         $container->set('huh.ajax', new AjaxManager());
-        $container->set('contao.csrf.token_manager', $tokenManager);
+        $container->set('security.csrf.token_manager', $tokenManager);
         System::setContainer($container);
     }
 
@@ -102,7 +102,7 @@ class HooksTest extends ContaoTestCase
         $container->setParameter('contao.csrf_token_name', 'token');
         $container->set('huh.request', $request);
         $container->set('huh.ajax', $ajaxManager);
-        $container->set('contao.csrf.token_manager', $tokenManager);
+        $container->set('security.csrf.token_manager', $tokenManager);
         System::setContainer($container);
 
         $hook->initializeSystemHook();

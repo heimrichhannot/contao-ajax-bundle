@@ -194,7 +194,7 @@ class AjaxManagerTest extends ContaoTestCase
 
         $request = new Request($this->mockContaoFramework(), $requestStack, $scopeMatcher);
         $container->set('huh.request', $request);
-        $container->set('contao.csrf.token_manager', $tokenAdapter);
+        $container->set('security.csrf.token_manager', $tokenAdapter);
         System::setContainer($container);
 
         $manager = new AjaxManager();
