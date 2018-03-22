@@ -57,10 +57,13 @@ class AjaxManagerTest extends ContaoTestCase
         $utilsContainer->method('isFrontend')->willReturn(true);
         $controller = $this->mockAdapter(['replaceInsertTags']);
         $controller->method('replaceInsertTags')->willReturn('buffer');
+        $ajaxManager = $this->getMockBuilder(AjaxManager::class)->setMethods(['exit'])->getMock();
+        $ajaxManager->method('exit')->willThrowException(new AjaxExitException('exit'));
 
         $container->set('huh.request', $request);
         $container->set('huh.utils.container', $utilsContainer);
         $container->set('contao.framework', $this->mockContaoFramework([Controller::class => $controller]));
+        $container->set('huh.ajax', $ajaxManager);
         System::setContainer($container);
 
         $container->set('huh.ajax.token', new AjaxTokenManager());
@@ -296,6 +299,16 @@ class AjaxManagerTest extends ContaoTestCase
         } catch (AjaxExitException $exception) {
             $this->assertSame('exit', $exception->getMessage());
         }
+    }
+
+    /**
+     * this function has to be skipped otherwise the whole php process will be finished.
+     */
+    public function testExit()
+    {
+        $this->markTestSkipped();
+        $manager = new AjaxManager();
+        $manager->exit();
     }
 
     /**

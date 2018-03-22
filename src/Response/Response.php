@@ -140,7 +140,7 @@ abstract class Response extends \Symfony\Component\HttpFoundation\JsonResponse i
         // error messages my occur, due to exit and \FrontendUser::destruct does no longer have a valid \Database instance
         ini_set('display_errors', 0);
 
-        $this->exit();
+        System::getContainer()->get('huh.ajax')->exit();
     }
 
     /**
@@ -155,13 +155,5 @@ abstract class Response extends \Symfony\Component\HttpFoundation\JsonResponse i
         }
 
         return parent::send();
-    }
-
-    /**
-     * exit function for testing.
-     */
-    public function exit()
-    {
-        exit;
     }
 }
