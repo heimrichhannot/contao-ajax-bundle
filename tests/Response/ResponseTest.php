@@ -71,4 +71,19 @@ class ResponseTest extends ContaoTestCase
             $this->assertSame('{"result":null,"message":"test","token":"token","data":"\"test\"","callback":null,"encodingOptions":15,"headers":{},"content":"\"test\"","version":"1.0","statusCode":200,"statusText":"OK","charset":null}', $exception->getMessage());
         }
     }
+
+    /**
+     * @covers \Response::exit()
+     */
+    public function testExit()
+    {
+        $response = $this->getMockBuilder(ResponseSuccess::class)->setMethods(['exit'])->getMock();
+        $response->method('exit')->willThrowException(new AjaxExitException('exit'));
+
+        try {
+            $response->exit();
+        } catch (AjaxExitException $exception) {
+            $this->assertSame('exit', $exception->getMessage());
+        }
+    }
 }
