@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.4] - 2018-03-22
+
+### Fixed
+* including exit function
+
 ## [1.0.3] - 2018-03-21
 
 ### Fixed
