@@ -8,14 +8,11 @@
 
 namespace HeimrichHannot\AjaxBundle\Tests\Manager;
 
+use Contao\Controller;
 use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\System;
 use Contao\TestCase\ContaoTestCase;
 use HeimrichHannot\AjaxBundle\Exception\AjaxExitException;
-use HeimrichHannot\AjaxBundle\Exception\InvalidAjaxActException;
-use HeimrichHannot\AjaxBundle\Exception\InvalidAjaxGroupException;
-use HeimrichHannot\AjaxBundle\Exception\InvalidAjaxTokenException;
-use HeimrichHannot\AjaxBundle\Exception\NoAjaxActionWithinGroupException;
 use HeimrichHannot\AjaxBundle\Manager\AjaxActionManager;
 use HeimrichHannot\AjaxBundle\Manager\AjaxManager;
 use HeimrichHannot\AjaxBundle\Manager\AjaxTokenManager;
@@ -58,9 +55,12 @@ class AjaxManagerTest extends ContaoTestCase
 
         $utilsContainer = $this->mockAdapter(['isFrontend']);
         $utilsContainer->method('isFrontend')->willReturn(true);
+        $controller = $this->mockAdapter(['replaceInsertTags']);
+        $controller->method('replaceInsertTags')->willReturn('buffer');
 
         $container->set('huh.request', $request);
         $container->set('huh.utils.container', $utilsContainer);
+        $container->set('contao.framework', $this->mockContaoFramework([Controller::class => $controller]));
         System::setContainer($container);
 
         $container->set('huh.ajax.token', new AjaxTokenManager());
@@ -212,33 +212,35 @@ class AjaxManagerTest extends ContaoTestCase
 
     public function testRunActiveAction()
     {
-        $manager = new AjaxManager();
+        $manager = $this->getMockBuilder(AjaxManager::class)->setMethods(['exit'])->getMock();
+        $manager->method('exit')->willThrowException(new AjaxExitException('exit'));
+
         try {
             $GLOBALS['AJAX'] = [];
             $manager->runActiveAction('ag', 'getTrue', 'test');
-        } catch (InvalidAjaxGroupException $exception) {
-            $this->assertSame('Invalid ajax group.', $exception->getMessage());
+        } catch (AjaxExitException $exception) {
+            $this->assertSame('exit', $exception->getMessage());
         }
 
         try {
             $GLOBALS['AJAX'] = ['ag' => ['actions' => '']];
             $manager->runActiveAction('ag', 'getTrue', 'test');
-        } catch (NoAjaxActionWithinGroupException $exception) {
-            $this->assertSame('No available ajax actions within given group.', $exception->getMessage());
+        } catch (AjaxExitException $exception) {
+            $this->assertSame('exit', $exception->getMessage());
         }
 
         try {
             $GLOBALS['AJAX'] = ['ag' => ['actions' => []]];
             $manager->runActiveAction('ag', 'getTrue', 'test');
-        } catch (InvalidAjaxActException $exception) {
-            $this->assertSame('Invalid ajax act.', $exception->getMessage());
+        } catch (AjaxExitException $exception) {
+            $this->assertSame('exit', $exception->getMessage());
         }
 
         try {
             $GLOBALS['AJAX'] = ['ag' => ['actions' => ['getTrue' => ['csrf_protection' => true]]]];
             $manager->runActiveAction('ag', 'getTrue', 'test');
-        } catch (InvalidAjaxTokenException $exception) {
-            $this->assertSame('Invalid ajax token.', $exception->getMessage());
+        } catch (AjaxExitException $exception) {
+            $this->assertSame('exit', $exception->getMessage());
         }
 
         $requestStack = new RequestStack();
@@ -274,6 +276,7 @@ class AjaxManagerTest extends ContaoTestCase
         // is xml http request
         $request->headers->set('X-Requested-With', 'XMLHttpRequest');
         $GLOBALS['AJAX'] = ['ag' => ['actions' => ['getResponse' => ['csrf_protection' => true]]]];
+        $manager = new AjaxManager();
         try {
             ob_start();
             $manager->runActiveAction('ag', 'getResponse', $this);
@@ -296,11 +299,14 @@ class AjaxManagerTest extends ContaoTestCase
     }
 
     /**
-     * @return ResponseSuccess
+     * @return ResponseSuccess| \PHPUnit_Framework_MockObject_MockObject
      */
     public function getResponse()
     {
-        return new ResponseSuccess();
+        $response = $this->getMockBuilder(ResponseSuccess::class)->setMethods(['exit'])->getMock();
+        $response->method('exit')->willThrowException(new AjaxExitException('exit'));
+
+        return $response;
     }
 
     /**

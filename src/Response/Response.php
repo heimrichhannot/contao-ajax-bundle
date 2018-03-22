@@ -8,6 +8,7 @@
 
 namespace HeimrichHannot\AjaxBundle\Response;
 
+use Contao\Controller;
 use Contao\System;
 use HeimrichHannot\AjaxBundle\Exception\AjaxExitException;
 
@@ -129,7 +130,7 @@ abstract class Response extends \Symfony\Component\HttpFoundation\JsonResponse i
 
         $strBuffer = json_encode($this->getOutputData());
 
-        $strBuffer = \Controller::replaceInsertTags($strBuffer, false); // do not cache inserttags
+        $strBuffer = System::getContainer()->get('contao.framework')->getAdapter(Controller::class)->replaceInsertTags($strBuffer, false); // do not cache inserttags
 
         $this->setJson($strBuffer);
 
@@ -139,7 +140,7 @@ abstract class Response extends \Symfony\Component\HttpFoundation\JsonResponse i
         // error messages my occur, due to exit and \FrontendUser::destruct does no longer have a valid \Database instance
         ini_set('display_errors', 0);
 
-        throw new AjaxExitException('exit');
+        $this->exit();
     }
 
     /**
@@ -154,5 +155,13 @@ abstract class Response extends \Symfony\Component\HttpFoundation\JsonResponse i
         }
 
         return parent::send();
+    }
+
+    /**
+     * exit function for testing.
+     */
+    public function exit()
+    {
+        exit;
     }
 }

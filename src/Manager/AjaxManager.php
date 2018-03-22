@@ -9,10 +9,6 @@
 namespace HeimrichHannot\AjaxBundle\Manager;
 
 use Contao\System;
-use HeimrichHannot\AjaxBundle\Exception\InvalidAjaxActException;
-use HeimrichHannot\AjaxBundle\Exception\InvalidAjaxGroupException;
-use HeimrichHannot\AjaxBundle\Exception\InvalidAjaxTokenException;
-use HeimrichHannot\AjaxBundle\Exception\NoAjaxActionWithinGroupException;
 use HeimrichHannot\AjaxBundle\Response\Response;
 use HeimrichHannot\AjaxBundle\Response\ResponseError;
 
@@ -80,20 +76,20 @@ class AjaxManager
 
             if ($objAction === static::AJAX_ERROR_INVALID_GROUP) {
                 $this->sendResponseError('Invalid ajax group.');
-                throw new InvalidAjaxGroupException('Invalid ajax group.');
+                $this->exit();
             }
 
             if ($objAction === static::AJAX_ERROR_NO_AVAILABLE_ACTIONS) {
                 $this->sendResponseError('No available ajax actions within given group.');
-                throw new NoAjaxActionWithinGroupException('No available ajax actions within given group.');
+                $this->exit();
             }
 
             if ($objAction === static::AJAX_ERROR_INVALID_ACTION) {
                 $this->sendResponseError('Invalid ajax act.');
-                throw new InvalidAjaxActException('Invalid ajax act.');
+                $this->exit();
             } elseif ($objAction === static::AJAX_ERROR_INVALID_TOKEN) {
                 $this->sendResponseError('Invalid ajax token.');
-                throw new InvalidAjaxTokenException('Invalid ajax token.');
+                $this->exit();
             }
 
             if (null !== $objAction) {
@@ -223,5 +219,13 @@ class AjaxManager
     {
         $objResponse = new ResponseError($message);
         $objResponse->send();
+    }
+
+    /**
+     * exit function for testing.
+     */
+    public function exit()
+    {
+        exit;
     }
 }
