@@ -302,24 +302,11 @@ class AjaxManagerTest extends ContaoTestCase
     }
 
     /**
-     * this function has to be skipped otherwise the whole php process will be finished.
-     */
-    public function testExit()
-    {
-        $this->markTestSkipped();
-        $manager = new AjaxManager();
-        $manager->exit();
-    }
-
-    /**
-     * @return ResponseSuccess| \PHPUnit_Framework_MockObject_MockObject
+     * @return ResponseSuccess
      */
     public function getResponse()
     {
-        $response = $this->getMockBuilder(ResponseSuccess::class)->setMethods(['exit'])->getMock();
-        $response->method('exit')->willThrowException(new AjaxExitException('exit'));
-
-        return $response;
+        return new ResponseSuccess();
     }
 
     /**

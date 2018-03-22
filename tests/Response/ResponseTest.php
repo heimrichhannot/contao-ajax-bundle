@@ -8,6 +8,7 @@
 
 namespace HeimrichHannot\AjaxBundle\Tests\Response;
 
+use Contao\Controller;
 use Contao\System;
 use Contao\TestCase\ContaoTestCase;
 use HeimrichHannot\AjaxBundle\Exception\AjaxExitException;
@@ -56,6 +57,22 @@ class ResponseTest extends ContaoTestCase
         // set url
         $response->setUrl('url');
         $this->assertArrayHasKey('url', $response->getResult()->getData());
+    }
+
+    public function testOutput()
+    {
+        $controller = $this->mockAdapter(['replaceInsertTags']);
+        $controller->method('replaceInsertTags')->willReturn('string');
+
+        $ajaxManager = $this->mockAdapter(['exit']);
+
+        $container = System::getContainer();
+        $container->set('contao.framework', $this->mockContaoFramework([Controller::class => $controller]));
+        $container->set('huh.ajax', $ajaxManager);
+
+        $response = new ResponseSuccess('test');
+        ob_start();
+        $this->assertNull($response->output());
     }
 
     public function testSend()
