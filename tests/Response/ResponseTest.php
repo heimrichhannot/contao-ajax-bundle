@@ -73,7 +73,7 @@ class ResponseTest extends ContaoTestCase
     }
 
     /**
-     * @covers \Response::exit()
+     * @covers \HeimrichHannot\AjaxBundle\Response\Response::exit()
      */
     public function testExit()
     {
