@@ -57,11 +57,7 @@
     "preferred-install": "dist"
   },
   "extra": {
-    "contao": {
-      "sources": {
-        "": "system/modules/ajax"
-      }
-    },
     "contao-manager-plugin": "HeimrichHannot\\AjaxBundle\\ContaoManager\\Plugin"
   }
 }
+
