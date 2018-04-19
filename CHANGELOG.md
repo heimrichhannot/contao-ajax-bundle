@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.6] - 2018-04-19
+
+### Fixed
+- set `$GLOBALS['AJAX']` only if it's not already set (caused error when using heimrichhannot/contao-ajax and heimrichhannot/contao-ajax-bundle simultanious)
+
 ## [1.0.5] - 2018-04-03
 
 ### Fixed

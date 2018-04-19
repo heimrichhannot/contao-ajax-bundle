@@ -11,9 +11,10 @@
 /**
  * Ajax Actions
  */
-$GLOBALS['AJAX'] = [
-
-];
+if(!isset($GLOBALS['AJAX']))
+{
+$GLOBALS['AJAX'] = [];
+}
 
 
 /**
