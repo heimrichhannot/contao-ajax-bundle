@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.7] - 2019-03-27
+
+### Changed
+- removed symfony/framework-bundle as dependency for better compatibility
+
 ## [1.0.6] - 2018-04-19
 
 ### Fixed
