@@ -1,4 +1,7 @@
 services:
+  HeimrichHannot\AjaxBundle\Manager\AjaxTokenManager:
+    autowire: true
+
   huh.ajax.hooks:
     class: HeimrichHannot\AjaxBundle\Backend\Hooks
     public: true
@@ -6,7 +9,7 @@ services:
     class: HeimrichHannot\AjaxBundle\Manager\AjaxManager
     public: true
   huh.ajax.token:
-    class: HeimrichHannot\AjaxBundle\Manager\AjaxTokenManager
+    alias: 'HeimrichHannot\AjaxBundle\Manager\AjaxTokenManager'
     public: true
   huh.ajax.action:
     class: HeimrichHannot\AjaxBundle\Manager\AjaxActionManager
