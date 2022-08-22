@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.1.2] - 2022-08-22
+- Fixed: array index issue
+
 ## [1.1.1] - 2022-06-02
 - Fixed: session issue
 

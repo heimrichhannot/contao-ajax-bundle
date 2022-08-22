@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2018 Heimrich & Hannot GmbH
+ * Copyright (c) 2022 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -26,10 +26,7 @@ class AjaxActionManager
     /**
      * AjaxAction constructor.
      *
-     * @param string $group
-     * @param string $action
-     * @param array  $attributes
-     * @param null   $token
+     * @param null $token
      */
     public function __construct(string $group = '', string $action = '', array $attributes = [], $token = null)
     {
@@ -40,8 +37,6 @@ class AjaxActionManager
     }
 
     /**
-     * @param string $url
-     *
      * @return mixed
      */
     public function removeAjaxParametersFromUrl(string $url)
@@ -50,13 +45,7 @@ class AjaxActionManager
     }
 
     /**
-     * @param string      $group
-     * @param string|null $action
-     * @param array       $attributes
-     * @param bool        $keepParams
-     * @param string|null $url
-     *
-     * @return null|string
+     * @return string|null
      */
     public function generateUrl(string $group, string $action = null, array $attributes = [], bool $keepParams = true, string $url = null)
     {
@@ -74,9 +63,6 @@ class AjaxActionManager
     }
 
     /**
-     * @param string      $group
-     * @param string|null $action
-     *
      * @return array
      */
     public function getParams(string $group, string $action = null)
@@ -92,7 +78,7 @@ class AjaxActionManager
 
         $arrConfig = isset($GLOBALS['AJAX'][$group]['actions'][$action]) ? $GLOBALS['AJAX'][$group]['actions'][$action] : null;
 
-        if ($arrConfig && $arrConfig['csrf_protection']) {
+        if ($arrConfig && ($arrConfig['csrf_protection'] ?? false)) {
             $strToken = System::getContainer()->get('huh.request')->getGet(AjaxManager::AJAX_ATTR_TOKEN);
 
             // create a new token for each action
@@ -130,7 +116,7 @@ class AjaxActionManager
             throw new BadMethodCallException('Bad Request, the called method is not public.');
         }
 
-        return call_user_func_array([$objContext, $this->strAction], $this->getArguments());
+        return \call_user_func_array([$objContext, $this->strAction], $this->getArguments());
     }
 
     /**
@@ -145,12 +131,12 @@ class AjaxActionManager
         $arrCurrentArguments = System::getContainer()->get('huh.request')->isMethod('POST') ? System::getContainer()->get('huh.request')->request->all() : System::getContainer()->get('huh.request')->query->all();
 
         foreach ($arrArguments as $argument) {
-            if (is_array($argument) || is_bool($argument)) {
+            if (\is_array($argument) || \is_bool($argument)) {
                 $arrArgumentValues[] = $argument;
                 continue;
             }
 
-            if (count(preg_grep('/'.$argument.'/i', $arrOptional)) < 1 && count(preg_grep('/'.$argument.'/i', array_keys($arrCurrentArguments))) < 1) {
+            if (\count(preg_grep('/'.$argument.'/i', $arrOptional)) < 1 && \count(preg_grep('/'.$argument.'/i', array_keys($arrCurrentArguments))) < 1) {
                 System::getContainer()->get('huh.ajax')->sendResponseError('Bad Request, missing argument '.$argument);
                 throw new AjaxExitException('Bad Request, missing argument '.$argument);
             }
@@ -158,7 +144,7 @@ class AjaxActionManager
             $varValue = System::getContainer()->get('huh.request')->isMethod('POST') ? System::getContainer()->get('huh.request')->getPost($argument) : System::getContainer()->get('huh.request')->getGet($argument);
 
             if ('true' === $varValue || 'false' === $varValue) {
-                $varValue = filter_var($varValue, FILTER_VALIDATE_BOOLEAN);
+                $varValue = filter_var($varValue, \FILTER_VALIDATE_BOOLEAN);
             }
 
             $arrArgumentValues[] = $varValue;

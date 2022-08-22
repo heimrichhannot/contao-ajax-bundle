@@ -19,7 +19,7 @@
     }
   ],
   "require": {
-    "php": "^7.1|^8.0",
+    "php": "^7.1 || ^8.0",
     "contao/core-bundle": "^4.4",
     "heimrichhannot/contao-utils-bundle": "^2.217"
   },
@@ -37,23 +37,11 @@
     "psr-4": {
       "HeimrichHannot\\AjaxBundle\\": "src/"
     },
-    "classmap": [
-      "src/"
-    ],
-    "exclude-from-classmap": [
-      "src/Resources/contao/config/",
-      "src/Resources/contao/dca/",
-      "src/Resources/contao/languages/",
-      "src/Resources/contao/templates/"
-    ]
   },
   "autoload-dev": {
     "psr-4": {
       "HeimrichHannot\\AjaxBundle\\Test\\": "tests/"
     }
-  },
-  "config": {
-    "preferred-install": "dist"
   },
   "extra": {
     "contao-manager-plugin": "HeimrichHannot\\AjaxBundle\\ContaoManager\\Plugin"
