@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2022 Heimrich & Hannot GmbH
+ * Copyright (c) 2023 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -12,6 +12,7 @@ use Contao\PageModel;
 use Contao\System;
 use HeimrichHannot\AjaxBundle\Exception\AjaxExitException;
 use Symfony\Component\DependencyInjection\Exception\BadMethodCallException;
+use Symfony\Component\HttpFoundation\Request;
 
 class AjaxActionManager
 {
@@ -78,8 +79,13 @@ class AjaxActionManager
 
         $arrConfig = isset($GLOBALS['AJAX'][$group]['actions'][$action]) ? $GLOBALS['AJAX'][$group]['actions'][$action] : null;
 
+        $request = System::getContainer()->get('request_stack')->getCurrentRequest();
+        if (!$request) {
+            return $arrParams;
+        }
+
         if ($arrConfig && ($arrConfig['csrf_protection'] ?? false)) {
-            $strToken = System::getContainer()->get('huh.request')->getGet(AjaxManager::AJAX_ATTR_TOKEN);
+            $strToken = $request->query->get(AjaxManager::AJAX_ATTR_TOKEN);
 
             // create a new token for each action
             if (!$strToken || ($strToken && !System::getContainer()->get('huh.ajax.token')->validate($strToken))) {
@@ -128,7 +134,12 @@ class AjaxActionManager
         $arrArguments = isset($this->arrAttributes['arguments']) ? $this->arrAttributes['arguments'] : [];
         $arrOptional = isset($this->arrAttributes['optional']) ? $this->arrAttributes['optional'] : [];
 
-        $arrCurrentArguments = System::getContainer()->get('huh.request')->isMethod('POST') ? System::getContainer()->get('huh.request')->request->all() : System::getContainer()->get('huh.request')->query->all();
+        $request = System::getContainer()->get('request_stack')->getCurrentRequest();
+        if (!$request) {
+            return $arrArgumentValues;
+        }
+
+        $arrCurrentArguments = $request->isMethod(Request::METHOD_POST) ? $request->request->all() : $request->query->all();
 
         foreach ($arrArguments as $argument) {
             if (\is_array($argument) || \is_bool($argument)) {
@@ -141,7 +152,7 @@ class AjaxActionManager
                 throw new AjaxExitException('Bad Request, missing argument '.$argument);
             }
 
-            $varValue = System::getContainer()->get('huh.request')->isMethod('POST') ? System::getContainer()->get('huh.request')->getPost($argument) : System::getContainer()->get('huh.request')->getGet($argument);
+            $varValue = $request->isMethod(Request::METHOD_POST) ? $request->request->get($argument) : $request->query->get($argument);
 
             if ('true' === $varValue || 'false' === $varValue) {
                 $varValue = filter_var($varValue, \FILTER_VALIDATE_BOOLEAN);

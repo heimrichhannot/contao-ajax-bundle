@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2023-01-09
+- Changed: lowered dependency on RequestBundle
+
 ## [1.1.3] - 2022-08-22
 - Fixed: invalid composer.json file
 
