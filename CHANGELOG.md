@@ -1,8 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [Unreleased] - 2023-01-09
+## [1.2.0] - 2023-02-10
+- Changed: requires at least php 7.4
+- Changed: requires at least contao 4.9
+- Changed: some refactoring
 - Changed: lowered dependency on RequestBundle
+- Fixed: deprecation warning due missing return value in contao manager plugin class
 
 ## [1.1.3] - 2022-08-22
 - Fixed: invalid composer.json file

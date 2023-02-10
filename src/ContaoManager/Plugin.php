@@ -16,7 +16,7 @@ use HeimrichHannot\AjaxBundle\HeimrichHannotContaoAjaxBundle;
 
 class Plugin implements BundlePluginInterface
 {
-    public function getBundles(ParserInterface $parser)
+    public function getBundles(ParserInterface $parser): array
     {
         return [
             BundleConfig::create(HeimrichHannotContaoAjaxBundle::class)->setLoadAfter([ContaoCoreBundle::class]),

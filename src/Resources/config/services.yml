@@ -1,10 +1,12 @@
 services:
+  HeimrichHannot\AjaxBundle\:
+    resource: '../../{EventListener}/*'
+    autowire: true
+    autoconfigure: true
+
   HeimrichHannot\AjaxBundle\Manager\AjaxTokenManager:
     autowire: true
 
-  huh.ajax.hooks:
-    class: HeimrichHannot\AjaxBundle\Backend\Hooks
-    public: true
   huh.ajax:
     class: HeimrichHannot\AjaxBundle\Manager\AjaxManager
     public: true
@@ -14,3 +16,5 @@ services:
   huh.ajax.action:
     class: HeimrichHannot\AjaxBundle\Manager\AjaxActionManager
     public: true
+
+  HeimrichHannot\AjaxBundle\Manager\AjaxManager: '@huh.ajax'

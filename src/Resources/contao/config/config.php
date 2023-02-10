@@ -11,13 +11,6 @@
 /**
  * Ajax Actions
  */
-if(!isset($GLOBALS['AJAX']))
-{
-$GLOBALS['AJAX'] = [];
+if (!isset($GLOBALS['AJAX'])) {
+    $GLOBALS['AJAX'] = [];
 }
-
-
-/**
- * Hooks
- */
-$GLOBALS['TL_HOOKS']['initializeSystem'][] = ['huh.ajax.hooks', 'initializeSystemHook'];
