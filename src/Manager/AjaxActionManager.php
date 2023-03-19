@@ -106,19 +106,19 @@ class AjaxActionManager
         $objItem = null;
 
         if (null === $objContext) {
-            System::getContainer()->get('huh.ajax')->sendResponseError('Bad Request, context not set.');
+            System::getContainer()->get(AjaxManager::class)->sendResponseError('Bad Request, context not set.');
             throw new \Exception('Bad Request, context not set.');
         }
 
         if (!method_exists($objContext, $this->strAction)) {
-            System::getContainer()->get('huh.ajax')->sendResponseError('Bad Request, ajax method does not exist within context.');
+            System::getContainer()->get(AjaxManager::class)->sendResponseError('Bad Request, ajax method does not exist within context.');
             throw new BadMethodCallException('Bad Request, ajax method does not exist within context.');
         }
 
         $reflection = new \ReflectionMethod($objContext, $this->strAction);
 
         if (!$reflection->isPublic()) {
-            System::getContainer()->get('huh.ajax')->sendResponseError('Bad Request, the called method is not public.');
+            System::getContainer()->get(AjaxManager::class)->sendResponseError('Bad Request, the called method is not public.');
             throw new BadMethodCallException('Bad Request, the called method is not public.');
         }
 
@@ -148,7 +148,7 @@ class AjaxActionManager
             }
 
             if (\count(preg_grep('/'.$argument.'/i', $arrOptional)) < 1 && \count(preg_grep('/'.$argument.'/i', array_keys($arrCurrentArguments))) < 1) {
-                System::getContainer()->get('huh.ajax')->sendResponseError('Bad Request, missing argument '.$argument);
+                System::getContainer()->get(AjaxManager::class)->sendResponseError('Bad Request, missing argument '.$argument);
                 throw new AjaxExitException('Bad Request, missing argument '.$argument);
             }
 

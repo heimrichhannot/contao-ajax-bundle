@@ -8,9 +8,11 @@
 
 namespace HeimrichHannot\AjaxBundle\Manager;
 
+use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\System;
 use HeimrichHannot\AjaxBundle\Response\Response;
 use HeimrichHannot\AjaxBundle\Response\ResponseError;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class AjaxManager
 {
@@ -29,6 +31,16 @@ class AjaxManager
     const AJAX_ERROR_INVALID_ACTION = 3;
     const AJAX_ERROR_INVALID_TOKEN = 4;
 
+    private RequestStack $requestStack;
+    private ScopeMatcher $scopeMatcher;
+
+    public function __construct(RequestStack $requestStack, ScopeMatcher $scopeMatcher)
+    {
+        $this->requestStack = $requestStack;
+        $this->scopeMatcher = $scopeMatcher;
+    }
+
+
     /**
      * Determine if the current ajax request is group related.
      *
@@ -38,7 +50,7 @@ class AjaxManager
      */
     public function isRelated(string $groupRequested)
     {
-        if (System::getContainer()->get('huh.request')->isXmlHttpRequest()) {
+        if ($this->requestStack->getCurrentRequest()->isXmlHttpRequest()) {
             if (null === ($strGroup = $this->getActiveGroup($groupRequested))) {
                 return false;
             }
@@ -58,7 +70,7 @@ class AjaxManager
      */
     public function runActiveAction(string $group, string $action, $objContext)
     {
-        if (System::getContainer()->get('huh.request')->isXmlHttpRequest()) {
+        if ($this->requestStack->getCurrentRequest()->isXmlHttpRequest()) {
             // Add custom logic via hook
             if (isset($GLOBALS['TL_HOOKS']['beforeAjaxAction']) && is_array($GLOBALS['TL_HOOKS']['beforeAjaxAction'])) {
                 foreach ($GLOBALS['TL_HOOKS']['beforeAjaxAction'] as $callback) {
@@ -117,8 +129,8 @@ class AjaxManager
      */
     public function getActiveGroup(string $strGroupRequested)
     {
-        $strScope = System::getContainer()->get('huh.request')->getGet(static::AJAX_ATTR_SCOPE);
-        $strGroup = System::getContainer()->get('huh.request')->getGet(static::AJAX_ATTR_GROUP);
+        $strScope = $this->requestStack->getCurrentRequest()->query->get(static::AJAX_ATTR_SCOPE);
+        $strGroup = $this->requestStack->getCurrentRequest()->query->get(static::AJAX_ATTR_GROUP);
 
         if ($strScope !== static::AJAX_SCOPE_DEFAULT) {
             return null;
@@ -145,8 +157,8 @@ class AjaxManager
      */
     public function getActiveAction(string $groupRequested, string $actionRequested)
     {
-        $strAct = System::getContainer()->get('huh.request')->getGet(static::AJAX_ATTR_ACT);
-        $strToken = System::getContainer()->get('huh.request')->getGet(static::AJAX_ATTR_TOKEN);
+        $strAct = $this->requestStack->getCurrentRequest()->query->get(static::AJAX_ATTR_ACT);
+        $strToken = $this->requestStack->getCurrentRequest()->query->get(static::AJAX_ATTR_TOKEN);
 
         if (!$strAct) {
             return null;
@@ -198,8 +210,9 @@ class AjaxManager
         $token = System::getContainer()->get('security.csrf.token_manager')->getToken(System::getContainer()->getParameter('contao.csrf_token_name'))->getValue();
         $_POST['REQUEST_TOKEN_EXPIRED'] = true;
         $_POST['REQUEST_TOKEN'] = $token;
-        System::getContainer()->get('huh.request')->setPost('REQUEST_TOKEN', $token);
-        System::getContainer()->get('huh.request')->setPost('REQUEST_TOKEN_EXPIRED', true);
+
+        $this->requestStack->getCurrentRequest()->request->set('REQUEST_TOKEN', $token);
+        $this->requestStack->getCurrentRequest()->request->set('REQUEST_TOKEN_EXPIRED', true);
     }
 
     /**
@@ -209,7 +222,10 @@ class AjaxManager
      */
     public function isRequestTokenExpired()
     {
-        return System::getContainer()->get('huh.utils.container')->isFrontend() && System::getContainer()->get('huh.request')->isXmlHttpRequest() && System::getContainer()->get('huh.request')->getPost('REQUEST_TOKEN_EXPIRED');
+        $request = $this->requestStack->getCurrentRequest();
+        return $this->scopeMatcher->isFrontendRequest($request)
+            && $request->isXmlHttpRequest()
+            && $request->getPost('REQUEST_TOKEN_EXPIRED');
     }
 
     /**

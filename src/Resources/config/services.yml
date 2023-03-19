@@ -7,14 +7,17 @@ services:
   HeimrichHannot\AjaxBundle\Manager\AjaxTokenManager:
     autowire: true
 
-  huh.ajax:
-    class: HeimrichHannot\AjaxBundle\Manager\AjaxManager
+  HeimrichHannot\AjaxBundle\Manager\AjaxManager:
+    autowire: true
     public: true
+
+  huh.ajax:
+    alias: HeimrichHannot\AjaxBundle\Manager\AjaxManager
+    public: true
+    deprecated: Alias %alias_id% is deprecated and will be removed in a future version. Please use AjaxManager service instead.
   huh.ajax.token:
     alias: 'HeimrichHannot\AjaxBundle\Manager\AjaxTokenManager'
     public: true
   huh.ajax.action:
     class: HeimrichHannot\AjaxBundle\Manager\AjaxActionManager
     public: true
-
-  HeimrichHannot\AjaxBundle\Manager\AjaxManager: '@huh.ajax'

@@ -11,6 +11,7 @@ namespace HeimrichHannot\AjaxBundle\Response;
 use Contao\Controller;
 use Contao\System;
 use HeimrichHannot\AjaxBundle\Exception\AjaxExitException;
+use HeimrichHannot\AjaxBundle\Manager\AjaxManager;
 
 abstract class Response extends \Symfony\Component\HttpFoundation\JsonResponse implements \JsonSerializable
 {
@@ -140,7 +141,7 @@ abstract class Response extends \Symfony\Component\HttpFoundation\JsonResponse i
         // error messages my occur, due to exit and \FrontendUser::destruct does no longer have a valid \Database instance
         ini_set('display_errors', 0);
 
-        System::getContainer()->get('huh.ajax')->exit();
+        System::getContainer()->get(AjaxManager::class)->exit();
     }
 
     /**

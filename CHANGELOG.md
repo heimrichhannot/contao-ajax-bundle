@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.3.0] - 2023-03-19
+- Changed: removed remaining request bunde usages
+- Deprecated: huh.ajax service alias
+
 ## [1.2.0] - 2023-02-10
 - Changed: requires at least php 7.4
 - Changed: requires at least contao 4.9
