@@ -23,6 +23,15 @@ class AjaxManager
     const AJAX_ATTR_AJAXID = 'aid';
     const AJAX_ATTR_TOKEN = 'ato';
 
+    public const AJAX_ATTRIBUTES = [
+        self::AJAX_ATTR_SCOPE,
+        self::AJAX_ATTR_ACT,
+        self::AJAX_ATTR_GROUP,
+        self::AJAX_ATTR_TYPE,
+        self::AJAX_ATTR_AJAXID,
+        self::AJAX_ATTR_TOKEN,
+    ];
+
     const AJAX_SCOPE_DEFAULT = 'ajax';
     const AJAX_TYPE_MODULE = 'module';
 
