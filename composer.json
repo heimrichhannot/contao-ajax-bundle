@@ -23,24 +23,9 @@
     "contao/core-bundle": "^4.9",
     "heimrichhannot/contao-utils-bundle": "^2.217 || v3.x-dev"
   },
-  "require-dev": {
-    "contao/test-case": "^1.1",
-    "contao/manager-plugin": "^2.0",
-    "friendsofphp/php-cs-fixer": "^2.2",
-    "phpunit/phpunit": ">=6.0 <6.5",
-    "php-http/guzzle6-adapter": "^1.1",
-    "php-http/message-factory": "^1.0.2",
-    "php-coveralls/php-coveralls": "^2.0",
-    "symfony/phpunit-bridge": "^3.2"
-  },
   "autoload": {
     "psr-4": {
       "HeimrichHannot\\AjaxBundle\\": "src/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "HeimrichHannot\\AjaxBundle\\Test\\": "tests/"
     }
   },
   "extra": {
