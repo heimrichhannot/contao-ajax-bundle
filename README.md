@@ -1,8 +1,6 @@
 
 ![](https://img.shields.io/packagist/v/heimrichhannot/contao-ajax-bundle.svg)
 ![](https://img.shields.io/packagist/dt/heimrichhannot/contao-ajax-bundle.svg)
-[![](https://img.shields.io/travis/heimrichhannot/contao-ajax-bundle/master.svg)](https://travis-ci.org/heimrichhannot/contao-ajax-bundle/)
-[![](https://img.shields.io/coveralls/heimrichhannot/contao-ajax-bundle/master.svg)](https://coveralls.io/github/heimrichhannot/contao-ajax-bundle)
 
 # Contao Ajax Bundle
 

@@ -16,7 +16,7 @@ class HeimrichHannotContaoAjaxBundle extends Bundle
     /**
      * @return AjaxExtension
      */
-    public function getContainerExtension()
+    public function getContainerExtension(): AjaxExtension
     {
         return new AjaxExtension();
     }

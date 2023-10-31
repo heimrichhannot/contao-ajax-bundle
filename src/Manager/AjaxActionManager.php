@@ -11,6 +11,7 @@ namespace HeimrichHannot\AjaxBundle\Manager;
 use Contao\PageModel;
 use Contao\System;
 use HeimrichHannot\AjaxBundle\Exception\AjaxExitException;
+use HeimrichHannot\UtilsBundle\Util\Utils;
 use Symfony\Component\DependencyInjection\Exception\BadMethodCallException;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -42,7 +43,7 @@ class AjaxActionManager
      */
     public function removeAjaxParametersFromUrl(string $url)
     {
-        return System::getContainer()->get('huh.utils.url')->removeQueryString(System::getContainer()->get('huh.utils.class')->getConstantsByPrefixes('HeimrichHannot\AjaxBundle\Manager\AjaxManager', ['AJAX_ATTR']), $url);
+        return System::getContainer()->get(Utils::class)->url()->removeQueryStringParameterFromUrl(AjaxManager::AJAX_ATTRIBUTES, $url);
     }
 
     /**
@@ -57,8 +58,11 @@ class AjaxActionManager
             $url = $keepParams ? null : $objPage->getFrontendUrl();
         }
 
-        $url = System::getContainer()->get('huh.utils.url')->addQueryString(http_build_query($this->getParams($group, $action), '', '&'), $url);
-        $url = System::getContainer()->get('huh.utils.url')->addQueryString(http_build_query($attributes, '', '&'), $url);
+        /** @var Utils $utils */
+        $utils = System::getContainer()->get(Utils::class);
+
+        $url = $utils->url()->addQueryStringParameterToUrl(http_build_query($this->getParams($group, $action), '', '&'), $url);
+        $url = $utils->url()->addQueryStringParameterToUrl(http_build_query($attributes, '', '&'), $url);
 
         return $url;
     }

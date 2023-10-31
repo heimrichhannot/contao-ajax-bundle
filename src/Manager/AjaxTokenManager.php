@@ -11,40 +11,24 @@ namespace HeimrichHannot\AjaxBundle\Manager;
 use Contao\Config;
 use Contao\Input;
 use HeimrichHannot\UtilsBundle\Util\Utils;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class AjaxTokenManager
 {
-    /**
-     * Constants.
-     */
-    const SESSION_KEY = 'AJAX_TOKENS';
+    private const SESSION_KEY = 'AJAX_TOKENS';
 
-    /**
-     * Tokens.
-     *
-     * @var array
-     */
-    protected $tokens;
-
-    /**
-     * Current session object.
-     *
-     * @var Session
-     */
-    protected $session;
-    /**
-     * @var Utils
-     */
-    private $utils;
+    protected array $tokens;
+    protected SessionInterface $session;
+    private Utils $utils;
 
     /**
      * Load the token or generate a new one.
      */
-    public function __construct(SessionInterface $session, Utils $utils)
+    public function __construct(RequestStack $requestStack, Utils $utils)
     {
-        $this->session = $session;
+        $this->session = $requestStack->getSession();
         $this->utils = $utils;
 
         $this->tokens = $this->session->get(static::SESSION_KEY);
