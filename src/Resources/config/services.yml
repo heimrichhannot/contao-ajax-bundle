@@ -14,10 +14,14 @@ services:
   huh.ajax:
     alias: HeimrichHannot\AjaxBundle\Manager\AjaxManager
     public: true
-    deprecated: Alias %alias_id% is deprecated and will be removed in a future version. Please use AjaxManager service instead.
+    deprecated:
+      package: 'heimrichhannot/contao-ajax-bundle'
+      version: '1.3'
+
   huh.ajax.token:
     alias: 'HeimrichHannot\AjaxBundle\Manager\AjaxTokenManager'
     public: true
+
   huh.ajax.action:
     class: HeimrichHannot\AjaxBundle\Manager\AjaxActionManager
     public: true
