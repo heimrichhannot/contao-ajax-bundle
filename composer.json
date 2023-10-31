@@ -20,8 +20,8 @@
   ],
   "require": {
     "php": "^7.4 || ^8.0",
-    "contao/core-bundle": "^4.9",
-    "heimrichhannot/contao-utils-bundle": "^2.217 || v3.x-dev"
+    "contao/core-bundle": "^4.9 || ^5.0",
+    "heimrichhannot/contao-utils-bundle": "^2.217 || ^3.0.0-beta"
   },
   "autoload": {
     "psr-4": {
@@ -32,4 +32,3 @@
     "contao-manager-plugin": "HeimrichHannot\\AjaxBundle\\ContaoManager\\Plugin"
   }
 }
-
