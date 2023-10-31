@@ -1,6 +1,15 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.4.0] - 2023-10-31
+- Added: support for contao 5
+- Added: support for utils bundle version 3
+- Added: license file
+- Changed: dropped support for contao 4.9
+- Changed: some small code adjustments
+- Fixed: Symfony 6 compatibility
+- Removed: outdated test setup
+
 ## [1.3.0] - 2023-03-19
 - Changed: removed remaining request bunde usages
 - Deprecated: huh.ajax service alias
