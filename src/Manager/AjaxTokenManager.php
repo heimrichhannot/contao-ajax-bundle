@@ -31,7 +31,7 @@ class AjaxTokenManager
         $this->session = $requestStack->getSession();
         $this->utils = $utils;
 
-        $this->tokens = $this->session->get(static::SESSION_KEY);
+        $this->tokens = $this->session->get(static::SESSION_KEY) ?? [];
 
         // Generate a new token if none is available
         if (empty($this->tokens) || !\is_array($this->tokens)) {
