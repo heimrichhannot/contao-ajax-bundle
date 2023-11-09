@@ -43,7 +43,10 @@ class AjaxActionManager
      */
     public function removeAjaxParametersFromUrl(string $url)
     {
-        return System::getContainer()->get(Utils::class)->url()->removeQueryStringParameterFromUrl(AjaxManager::AJAX_ATTRIBUTES, $url);
+        foreach (AjaxManager::AJAX_ATTRIBUTES as $attribute) {
+            $url = System::getContainer()->get(Utils::class)->url()->removeQueryStringParameterFromUrl($attribute, $url);
+        }
+        return $url;
     }
 
     /**
