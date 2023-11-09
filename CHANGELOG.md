@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.4.2] - 2023-11-09
+- Fixed: UitlsBundle api change
+
 ## [1.4.1] - 2023-11-07
 - Fixed: possible exception
 
