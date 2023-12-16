@@ -64,7 +64,7 @@ class AjaxActionManager
         /** @var Utils $utils */
         $utils = System::getContainer()->get(Utils::class);
 
-        $url = $utils->url()->addQueryStringParameterToUrl(http_build_query($this->getParams($group, $action), '', '&'), $url);
+        $url = $utils->url()->addQueryStringParameterToUrl(http_build_query($this->getParams($group, $action), '', '&'), $url ?: '');
         $url = $utils->url()->addQueryStringParameterToUrl(http_build_query($attributes, '', '&'), $url);
 
         return $url;

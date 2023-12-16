@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.4.3] - 2023-12-16
+- Fixed: empty url type issue
+
 ## [1.4.2] - 2023-11-09
 - Fixed: UitlsBundle api change
 
