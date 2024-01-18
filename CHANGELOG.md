@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.4.4] - 2024-01-18
+- Fixed: incompatibility with contao 5 form ajax submit
+
 ## [1.4.3] - 2023-12-16
 - Fixed: empty url type issue
 

@@ -8,6 +8,7 @@
 
 namespace HeimrichHannot\AjaxBundle\Manager;
 
+use Contao\CoreBundle\Csrf\ContaoCsrfTokenManager;
 use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\System;
 use HeimrichHannot\AjaxBundle\Response\Response;
@@ -42,11 +43,13 @@ class AjaxManager
 
     private RequestStack $requestStack;
     private ScopeMatcher $scopeMatcher;
+    private ContaoCsrfTokenManager $csrfTokenManager;
 
-    public function __construct(RequestStack $requestStack, ScopeMatcher $scopeMatcher)
+    public function __construct(RequestStack $requestStack, ScopeMatcher $scopeMatcher, ContaoCsrfTokenManager $csrfTokenManager)
     {
         $this->requestStack = $requestStack;
         $this->scopeMatcher = $scopeMatcher;
+        $this->csrfTokenManager = $csrfTokenManager;
     }
 
 
@@ -216,7 +219,7 @@ class AjaxManager
      */
     public function setRequestTokenExpired()
     {
-        $token = System::getContainer()->get('security.csrf.token_manager')->getToken(System::getContainer()->getParameter('contao.csrf_token_name'))->getValue();
+        $token = $this->csrfTokenManager->getDefaultTokenValue();
         $_POST['REQUEST_TOKEN_EXPIRED'] = true;
         $_POST['REQUEST_TOKEN'] = $token;
 
