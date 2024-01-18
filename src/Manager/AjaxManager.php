@@ -55,7 +55,7 @@ class AjaxManager
      *
      * @param string $groupRequested The ajax group
      *
-     * @return bool True / False if group from request match, otherwise null (no ajax request)
+     * @return bool|null True / False if group from request match, otherwise null (no ajax request)
      */
     public function isRelated(string $groupRequested): ?bool
     {
@@ -74,6 +74,7 @@ class AjaxManager
      * @param string $group
      * @param string $action
      * @param        $objContext
+     * @throws AjaxExitException
      */
     public function runActiveAction(string $group, string $action, $objContext): void
     {
