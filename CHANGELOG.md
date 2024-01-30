@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.4.5] - 2024-01-30
+- Fixed: check for getCurrentRequest() first
+
 ## [1.4.4] - 2024-01-18
 - Fixed: incompatibility with contao 5 form ajax submit
 
