@@ -59,7 +59,8 @@ class AjaxManager
      */
     public function isRelated(string $groupRequested): ?bool
     {
-        if ($this->requestStack->getCurrentRequest()->isXmlHttpRequest())
+        if ((null !== $this->requestStack->getCurrentRequest())
+            && $this->requestStack->getCurrentRequest()->isXmlHttpRequest())
         {
             return $this->getActiveGroup($groupRequested) !== null;
         }
@@ -76,7 +77,9 @@ class AjaxManager
      */
     public function runActiveAction(string $group, string $action, $objContext): void
     {
-        if ($this->requestStack->getCurrentRequest()->isXmlHttpRequest()) {
+        if ((null !== $this->requestStack->getCurrentRequest())
+            && $this->requestStack->getCurrentRequest()->isXmlHttpRequest())
+        {
             $hooks = $GLOBALS['TL_HOOKS']['beforeAjaxAction'] ?? null;
 
             // Add custom logic via hook
