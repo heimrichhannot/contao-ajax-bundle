@@ -81,7 +81,6 @@ class AjaxManager
             && $this->requestStack->getCurrentRequest()->isXmlHttpRequest())
         {
             $hooks = $GLOBALS['TL_HOOKS']['beforeAjaxAction'] ?? null;
-
             // Add custom logic via hook
             if (is_array($hooks))
             {
