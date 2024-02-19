@@ -17,20 +17,20 @@ use Symfony\Component\HttpFoundation\Request;
 
 class AjaxActionManager
 {
-    protected $strGroup;
+    protected string $strGroup;
 
-    protected $strAction;
+    protected string $strAction;
 
-    protected $arrAttributes;
+    protected array $arrAttributes;
 
-    protected $strToken;
+    protected ?string $strToken;
 
     /**
      * AjaxAction constructor.
      *
      * @param null $token
      */
-    public function __construct(string $group = '', string $action = '', array $attributes = [], $token = null)
+    public function __construct(string $group = '', string $action = '', array $attributes = [], ?string $token = null)
     {
         $this->strGroup = $group;
         $this->strAction = $action;
@@ -38,28 +38,30 @@ class AjaxActionManager
         $this->strToken = $token;
     }
 
-    /**
-     * @return mixed
-     */
-    public function removeAjaxParametersFromUrl(string $url)
+    public function removeAjaxParametersFromUrl(string $url): ?string
     {
         foreach (AjaxManager::AJAX_ATTRIBUTES as $attribute) {
-            $url = System::getContainer()->get(Utils::class)->url()->removeQueryStringParameterFromUrl($attribute, $url);
+            $url = System::getContainer()->get(Utils::class)->url()
+                ->removeQueryStringParameterFromUrl($attribute, $url);
         }
         return $url;
     }
 
-    /**
-     * @return string|null
-     */
-    public function generateUrl(string $group, string $action = null, array $attributes = [], bool $keepParams = true, string $url = null)
-    {
+    public function generateUrl(
+        string $group,
+        string $action = null,
+        array $attributes = [],
+        bool $keepParams = true,
+        string $url = null
+    ): ?string {
         /* @var PageModel $objPage */
         global $objPage;
 
         if (null === $url) {
             $url = $keepParams ? null : $objPage->getFrontendUrl();
         }
+
+        # todo: modernize, getFrontendUrl is deprecated
 
         /** @var Utils $utils */
         $utils = System::getContainer()->get(Utils::class);
@@ -70,10 +72,7 @@ class AjaxActionManager
         return $url;
     }
 
-    /**
-     * @return array
-     */
-    public function getParams(string $group, string $action = null)
+    public function getParams(string $group, string $action = null): array
     {
         $arrParams = [
             AjaxManager::AJAX_ATTR_SCOPE => AjaxManager::AJAX_SCOPE_DEFAULT,
@@ -84,7 +83,7 @@ class AjaxActionManager
             $arrParams[AjaxManager::AJAX_ATTR_ACT] = $action;
         }
 
-        $arrConfig = isset($GLOBALS['AJAX'][$group]['actions'][$action]) ? $GLOBALS['AJAX'][$group]['actions'][$action] : null;
+        $arrConfig = $GLOBALS['AJAX'][$group]['actions'][$action] ?? null;
 
         $request = System::getContainer()->get('request_stack')->getCurrentRequest();
         if (!$request) {
@@ -129,7 +128,7 @@ class AjaxActionManager
             throw new BadMethodCallException('Bad Request, the called method is not public.');
         }
 
-        return \call_user_func_array([$objContext, $this->strAction], $this->getArguments());
+        return call_user_func_array([$objContext, $this->strAction], $this->getArguments());
     }
 
     /**
@@ -138,8 +137,8 @@ class AjaxActionManager
     protected function getArguments()
     {
         $arrArgumentValues = [];
-        $arrArguments = isset($this->arrAttributes['arguments']) ? $this->arrAttributes['arguments'] : [];
-        $arrOptional = isset($this->arrAttributes['optional']) ? $this->arrAttributes['optional'] : [];
+        $arrArguments = $this->arrAttributes['arguments'] ?? [];
+        $arrOptional = $this->arrAttributes['optional'] ?? [];
 
         $request = System::getContainer()->get('request_stack')->getCurrentRequest();
         if (!$request) {
@@ -149,12 +148,14 @@ class AjaxActionManager
         $arrCurrentArguments = $request->isMethod(Request::METHOD_POST) ? $request->request->all() : $request->query->all();
 
         foreach ($arrArguments as $argument) {
-            if (\is_array($argument) || \is_bool($argument)) {
+            if (is_array($argument) || is_bool($argument)) {
                 $arrArgumentValues[] = $argument;
                 continue;
             }
 
-            if (\count(preg_grep('/'.$argument.'/i', $arrOptional)) < 1 && \count(preg_grep('/'.$argument.'/i', array_keys($arrCurrentArguments))) < 1) {
+            if (count(preg_grep('/'.$argument.'/i', $arrOptional)) < 1
+                && count(preg_grep('/'.$argument.'/i', array_keys($arrCurrentArguments))) < 1)
+            {
                 System::getContainer()->get(AjaxManager::class)->sendResponseError('Bad Request, missing argument '.$argument);
                 throw new AjaxExitException('Bad Request, missing argument '.$argument);
             }
@@ -162,7 +163,7 @@ class AjaxActionManager
             $varValue = $request->isMethod(Request::METHOD_POST) ? $request->request->get($argument) : $request->query->get($argument);
 
             if ('true' === $varValue || 'false' === $varValue) {
-                $varValue = filter_var($varValue, \FILTER_VALIDATE_BOOLEAN);
+                $varValue = filter_var($varValue, FILTER_VALIDATE_BOOLEAN);
             }
 
             $arrArgumentValues[] = $varValue;
