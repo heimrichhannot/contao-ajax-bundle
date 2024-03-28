@@ -12,12 +12,16 @@ use Contao\Controller;
 use Contao\System;
 use HeimrichHannot\AjaxBundle\Exception\AjaxExitException;
 use HeimrichHannot\AjaxBundle\Manager\AjaxManager;
+use JsonSerializable;
+use ReturnTypeWillChange;
+use stdClass;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
-abstract class Response extends \Symfony\Component\HttpFoundation\JsonResponse implements \JsonSerializable
+abstract class Response extends JsonResponse implements JsonSerializable
 {
-    protected $result;
+    protected ?ResponseData $result;
 
-    protected $message;
+    protected mixed $message;
 
     protected $token;
 
@@ -36,7 +40,7 @@ abstract class Response extends \Symfony\Component\HttpFoundation\JsonResponse i
     /**
      * @return ResponseData
      */
-    public function getResult()
+    public function getResult(): ?ResponseData
     {
         return null === $this->result ? new ResponseData() : $this->result;
     }
@@ -44,7 +48,7 @@ abstract class Response extends \Symfony\Component\HttpFoundation\JsonResponse i
     /**
      * @param ResponseData $result
      */
-    public function setResult(ResponseData $result)
+    public function setResult(ResponseData $result): void
     {
         $this->result = $result;
     }
@@ -52,7 +56,7 @@ abstract class Response extends \Symfony\Component\HttpFoundation\JsonResponse i
     /**
      * @return mixed
      */
-    public function getMessage()
+    public function getMessage(): mixed
     {
         return $this->message;
     }
@@ -60,7 +64,7 @@ abstract class Response extends \Symfony\Component\HttpFoundation\JsonResponse i
     /**
      * @param mixed $message
      */
-    public function setMessage($message)
+    public function setMessage(mixed $message): void
     {
         $this->message = $message;
     }
@@ -68,7 +72,7 @@ abstract class Response extends \Symfony\Component\HttpFoundation\JsonResponse i
     /**
      * @return string
      */
-    public function getToken()
+    public function getToken(): string
     {
         return $this->token;
     }
@@ -76,7 +80,7 @@ abstract class Response extends \Symfony\Component\HttpFoundation\JsonResponse i
     /**
      * @return array
      */
-    public function jsonSerialize()
+    #[ReturnTypeWillChange] public function jsonSerialize(): array
     {
         return get_object_vars($this);
     }
@@ -84,7 +88,7 @@ abstract class Response extends \Symfony\Component\HttpFoundation\JsonResponse i
     /**
      * @param bool $close
      */
-    public function setCloseModal(bool $close = false)
+    public function setCloseModal(bool $close = false): void
     {
         $objResult = $this->getResult();
         $arrData = $objResult->getData();
@@ -96,7 +100,7 @@ abstract class Response extends \Symfony\Component\HttpFoundation\JsonResponse i
     /**
      * @param string $url
      */
-    public function setUrl(string $url)
+    public function setUrl(string $url): void
     {
         $objResult = $this->getResult();
         $arrData = $objResult->getData();
@@ -106,11 +110,11 @@ abstract class Response extends \Symfony\Component\HttpFoundation\JsonResponse i
     }
 
     /**
-     * @return \stdClass
+     * @return stdClass
      */
-    public function getOutputData()
+    public function getOutputData(): stdClass
     {
-        $objOutput = new \stdClass();
+        $objOutput = new stdClass();
         $objOutput->result = $this->result;
         $objOutput->message = $this->message;
         $objOutput->token = $this->token;
@@ -120,8 +124,10 @@ abstract class Response extends \Symfony\Component\HttpFoundation\JsonResponse i
 
     /**
      * Output the response and clean output buffer.
+     *
+     * @throws AjaxExitException
      */
-    public function output()
+    public function output(): void
     {
         // The difference between them is ob_clean wipes the buffer then continues buffering,
         // whereas ob_end_clean wipes it, then stops buffering.
@@ -131,7 +137,8 @@ abstract class Response extends \Symfony\Component\HttpFoundation\JsonResponse i
 
         $strBuffer = json_encode($this->getOutputData());
 
-        $strBuffer = System::getContainer()->get('contao.framework')->getAdapter(Controller::class)->replaceInsertTags($strBuffer, false); // do not cache inserttags
+        $insertTagParser = System::getContainer()->get('contao.insert_tag.parser');
+        $strBuffer = $insertTagParser->replace($strBuffer);
 
         $this->setJson($strBuffer);
 
@@ -147,9 +154,9 @@ abstract class Response extends \Symfony\Component\HttpFoundation\JsonResponse i
     /**
      * @throws AjaxExitException
      *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return JsonResponse
      */
-    public function send()
+    public function send(): static
     {
         if (defined('UNIT_TESTING')) {
             throw new AjaxExitException(json_encode($this), AjaxExitException::CODE_NORMAL_EXIT);

@@ -19,9 +19,9 @@
     }
   ],
   "require": {
-    "php": "^7.4 || ^8.0",
+    "php": "^8.2",
     "contao/core-bundle": "^4.13 || ^5.0",
-    "heimrichhannot/contao-utils-bundle": "^2.217 || ^3.0.0-beta",
+    "heimrichhannot/contao-utils-bundle": "^2.217 || ^3.0",
     "symfony/http-foundation": "^5.4 || ^6.0"
   },
   "autoload": {

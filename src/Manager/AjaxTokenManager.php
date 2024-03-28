@@ -21,20 +21,19 @@ class AjaxTokenManager
 
     protected array $tokens;
     protected SessionInterface $session;
-    private Utils $utils;
 
     /**
      * Load the token or generate a new one.
      */
-    public function __construct(RequestStack $requestStack, Utils $utils)
-    {
+    public function __construct(
+        RequestStack $requestStack,
+        private Utils $utils
+    ) {
         $this->session = $requestStack->getSession();
-        $this->utils = $utils;
-
         $this->tokens = $this->session->get(static::SESSION_KEY) ?? [];
 
         // Generate a new token if none is available
-        if (empty($this->tokens) || !\is_array($this->tokens)) {
+        if (empty($this->tokens) || !is_array($this->tokens)) {
             $this->tokens[] = md5(uniqid(mt_rand(), true));
             $this->session->set(static::SESSION_KEY, $this->tokens);
         }
@@ -45,7 +44,7 @@ class AjaxTokenManager
      *
      * @return array The request token
      */
-    public function get()
+    public function get(): array
     {
         return $this->tokens;
     }
@@ -66,7 +65,7 @@ class AjaxTokenManager
      *
      * @return string The created request token
      */
-    public function create()
+    public function create(): string
     {
         $strToken = md5(uniqid(mt_rand(), true));
         $this->tokens[] = $strToken;
@@ -79,9 +78,9 @@ class AjaxTokenManager
     /**
      * Return the valid active token.
      *
-     * @return mixed|null the active token if valid, otherwise null
+     * @return string|null the active token if valid, otherwise null
      */
-    public function getActiveToken()
+    public function getActiveToken(): ?string
     {
         $strToken = Input::get(AjaxManager::AJAX_ATTR_TOKEN);
 

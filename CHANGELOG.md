@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## preparing [1.5.0] - YYYY-MM-DD
+- Changed: improved support for contao 5.0
+- Changed: improved PHP 8 compatibility
+- Removed: PHP 7.4 support
+
 ## [1.4.5] - 2024-01-30
 - Fixed: check for getCurrentRequest() first
 

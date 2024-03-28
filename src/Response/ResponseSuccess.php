@@ -8,11 +8,13 @@
 
 namespace HeimrichHannot\AjaxBundle\Response;
 
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+
 class ResponseSuccess extends Response
 {
     public function __construct($message = '')
     {
         parent::__construct($message);
-        $this->setStatusCode(Response::HTTP_OK);
+        $this->setStatusCode(SymfonyResponse::HTTP_OK);
     }
 }
