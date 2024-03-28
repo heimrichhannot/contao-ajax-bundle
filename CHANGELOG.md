@@ -1,8 +1,8 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## preparing [1.5.0] - YYYY-MM-DD
-- Changed: improved support for contao 5.0
+## [1.5.0] - 2024-03-28
+- Changed: improved support for contao 5
 - Changed: improved PHP 8 compatibility
 - Removed: PHP 7.4 support
 
