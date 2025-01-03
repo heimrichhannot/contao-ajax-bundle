@@ -8,7 +8,6 @@
 
 namespace HeimrichHannot\AjaxBundle\Response;
 
-use Contao\Controller;
 use Contao\System;
 use HeimrichHannot\AjaxBundle\Exception\AjaxExitException;
 use HeimrichHannot\AjaxBundle\Manager\AjaxManager;
@@ -19,7 +18,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 abstract class Response extends JsonResponse implements JsonSerializable
 {
-    protected ?ResponseData $result;
+    protected ?ResponseData $result = null;
 
     protected mixed $message;
 
@@ -42,7 +41,7 @@ abstract class Response extends JsonResponse implements JsonSerializable
      */
     public function getResult(): ?ResponseData
     {
-        return null === $this->result ? new ResponseData() : $this->result;
+        return $this->result ?? new ResponseData();
     }
 
     /**
@@ -61,9 +60,6 @@ abstract class Response extends JsonResponse implements JsonSerializable
         return $this->message;
     }
 
-    /**
-     * @param mixed $message
-     */
     public function setMessage(mixed $message): void
     {
         $this->message = $message;

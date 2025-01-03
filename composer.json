@@ -31,5 +31,12 @@
   },
   "extra": {
     "contao-manager-plugin": "HeimrichHannot\\AjaxBundle\\ContaoManager\\Plugin"
+  },
+  "require-dev": {
+    "rector/rector": "^1.2",
+    "contao/contao-rector": "dev-main",
+    "symplify/easy-coding-standard": "^12.5",
+    "phpstan/phpstan": "^1.12",
+    "phpstan/phpstan-symfony": "^1.4"
   }
 }

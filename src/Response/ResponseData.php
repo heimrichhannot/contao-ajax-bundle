@@ -13,19 +13,11 @@ use JsonSerializable;
 class ResponseData implements JsonSerializable
 {
     /**
-     * @var array
+     * @param mixed[] $data
+     * @param string $html
      */
-    protected array $data = [];
-
-    /**
-     * @var string
-     */
-    protected mixed $html;
-
-    public function __construct($html = '', $data = [])
+    public function __construct(protected mixed $html = '', protected array $data = [])
     {
-        $this->data = $data;
-        $this->html = $html;
     }
 
     /**
@@ -52,9 +44,6 @@ class ResponseData implements JsonSerializable
         return $this->html;
     }
 
-    /**
-     * @param mixed $html
-     */
     public function setHtml(mixed $html): void
     {
         $this->html = $html;

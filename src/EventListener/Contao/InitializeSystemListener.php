@@ -2,38 +2,20 @@
 
 namespace HeimrichHannot\AjaxBundle\EventListener\Contao;
 
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\CoreBundle\Routing\ScopeMatcher;
-use Contao\CoreBundle\ServiceAnnotation\Hook;
 use HeimrichHannot\AjaxBundle\Manager\AjaxManager;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
-/**
- * @Hook("initializeSystem")
- */
+#[AsHook('initializeSystem')]
 class InitializeSystemListener
 {
 
-    private RequestStack              $requestStack;
-    private ScopeMatcher              $scopeMatcher;
-    private CsrfTokenManagerInterface $tokenManager;
-    private ParameterBagInterface     $parameterBag;
-    private AjaxManager               $ajaxManager;
-
-    public function __construct(
-        RequestStack $requestStack,
-        ScopeMatcher $scopeMatcher,
-        CsrfTokenManagerInterface $tokenManager,
-        ParameterBagInterface $parameterBag,
-        AjaxManager $ajaxManager
-    ) {
-        $this->requestStack = $requestStack;
-        $this->scopeMatcher = $scopeMatcher;
-        $this->tokenManager = $tokenManager;
-        $this->parameterBag = $parameterBag;
-        $this->ajaxManager  = $ajaxManager;
+    public function __construct(private RequestStack $requestStack, private ScopeMatcher $scopeMatcher, private CsrfTokenManagerInterface $tokenManager, private ParameterBagInterface $parameterBag, private AjaxManager $ajaxManager)
+    {
     }
 
     public function __invoke(): void

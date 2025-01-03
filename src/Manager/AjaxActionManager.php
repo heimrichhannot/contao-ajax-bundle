@@ -8,7 +8,6 @@
 
 namespace HeimrichHannot\AjaxBundle\Manager;
 
-use Contao\PageModel;
 use Contao\System;
 use HeimrichHannot\AjaxBundle\Exception\AjaxExitException;
 use HeimrichHannot\UtilsBundle\Util\Utils;
@@ -17,25 +16,13 @@ use Symfony\Component\HttpFoundation\Request;
 
 class AjaxActionManager
 {
-    protected string $strGroup;
-
-    protected string $strAction;
-
-    protected array $arrAttributes;
-
-    protected ?string $strToken;
-
     /**
      * AjaxAction constructor.
      *
-     * @param null $token
+     * @param null $strToken
      */
-    public function __construct(string $group = '', string $action = '', array $attributes = [], ?string $token = null)
+    public function __construct(protected string $strGroup = '', protected string $strAction = '', protected array $arrAttributes = [], protected ?string $strToken = null)
     {
-        $this->strGroup = $group;
-        $this->strAction = $action;
-        $this->arrAttributes = $attributes;
-        $this->strToken = $token;
     }
 
     public function removeAjaxParametersFromUrl(string $url): ?string
@@ -49,10 +36,10 @@ class AjaxActionManager
 
     public function generateUrl(
         string $group,
-        string $action = null,
+        ?string $action = null,
         array $attributes = [],
         bool $keepParams = true,
-        string $url = null
+        ?string $url = null
     ): ?string {
         /* @var PageModel $objPage */
         global $objPage;
@@ -72,7 +59,7 @@ class AjaxActionManager
         return $url;
     }
 
-    public function getParams(string $group, string $action = null): array
+    public function getParams(string $group, ?string $action = null): array
     {
         $arrParams = [
             AjaxManager::AJAX_ATTR_SCOPE => AjaxManager::AJAX_SCOPE_DEFAULT,

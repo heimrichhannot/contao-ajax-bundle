@@ -8,4 +8,4 @@
  * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
  */
 
-$GLOBALS['TL_LANG']['MOD']['ajax'] = array('Ajax', 'Keep contao ajax requests organized and handle responses with ease.');
+$GLOBALS['TL_LANG']['MOD']['ajax'] = ['Ajax', 'Keep contao ajax requests organized and handle responses with ease.'];
