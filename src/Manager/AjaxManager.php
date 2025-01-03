@@ -15,7 +15,6 @@ use Contao\System;
 use HeimrichHannot\AjaxBundle\Exception\AjaxExitException;
 use HeimrichHannot\AjaxBundle\Response\Response;
 use HeimrichHannot\AjaxBundle\Response\ResponseError;
-use JetBrains\PhpStorm\NoReturn;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class AjaxManager
@@ -247,7 +246,7 @@ class AjaxManager
     /**
      * exit function for testing.
      */
-    #[NoReturn] public function exit(): void
+    public function exit(): never
     {
         exit;
     }
