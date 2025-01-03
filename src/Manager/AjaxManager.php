@@ -19,12 +19,12 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class AjaxManager
 {
-    const AJAX_ATTR_SCOPE = 'as';
-    const AJAX_ATTR_ACT = 'aa';
-    const AJAX_ATTR_GROUP = 'ag';
-    const AJAX_ATTR_TYPE = 'at';
-    const AJAX_ATTR_AJAXID = 'aid';
-    const AJAX_ATTR_TOKEN = 'ato';
+    public const AJAX_ATTR_SCOPE = 'as';
+    public const AJAX_ATTR_ACT = 'aa';
+    public const AJAX_ATTR_GROUP = 'ag';
+    public const AJAX_ATTR_TYPE = 'at';
+    public const AJAX_ATTR_AJAXID = 'aid';
+    public const AJAX_ATTR_TOKEN = 'ato';
 
     public const AJAX_ATTRIBUTES = [
         self::AJAX_ATTR_SCOPE,
@@ -35,19 +35,20 @@ class AjaxManager
         self::AJAX_ATTR_TOKEN,
     ];
 
-    const AJAX_SCOPE_DEFAULT = 'ajax';
-    const AJAX_TYPE_MODULE = 'module';
+    public const AJAX_SCOPE_DEFAULT = 'ajax';
+    public const AJAX_TYPE_MODULE = 'module';
 
-    const AJAX_ERROR_INVALID_GROUP = 1;
-    const AJAX_ERROR_NO_AVAILABLE_ACTIONS = 2;
-    const AJAX_ERROR_INVALID_ACTION = 3;
-    const AJAX_ERROR_INVALID_TOKEN = 4;
+    public const AJAX_ERROR_INVALID_GROUP = 1;
+    public const AJAX_ERROR_NO_AVAILABLE_ACTIONS = 2;
+    public const AJAX_ERROR_INVALID_ACTION = 3;
+    public const AJAX_ERROR_INVALID_TOKEN = 4;
 
     public function __construct(
-        private readonly RequestStack           $requestStack,
-        private readonly ScopeMatcher           $scopeMatcher,
-        private readonly ContaoCsrfTokenManager $csrfTokenManager
-    ) {}
+        private readonly RequestStack $requestStack,
+        private readonly ScopeMatcher $scopeMatcher,
+        private readonly ContaoCsrfTokenManager $csrfTokenManager,
+    ) {
+    }
 
     /**
      * Determine if the current ajax request is group related.
@@ -59,9 +60,8 @@ class AjaxManager
     public function isRelated(string $groupRequested): ?bool
     {
         if ((null !== $this->requestStack->getCurrentRequest())
-            && $this->requestStack->getCurrentRequest()->isXmlHttpRequest())
-        {
-            return $this->getActiveGroup($groupRequested) !== null;
+            && $this->requestStack->getCurrentRequest()->isXmlHttpRequest()) {
+            return null !== $this->getActiveGroup($groupRequested);
         }
 
         return null;
@@ -70,20 +70,15 @@ class AjaxManager
     /**
      * Trigger a valid ajax action.
      *
-     * @param string $group
-     * @param string $action
-     * @param        $objContext
      * @throws AjaxExitException
      */
     public function runActiveAction(string $group, string $action, $objContext): void
     {
         if ((null !== $this->requestStack->getCurrentRequest())
-            && $this->requestStack->getCurrentRequest()->isXmlHttpRequest())
-        {
+            && $this->requestStack->getCurrentRequest()->isXmlHttpRequest()) {
             // Add custom logic via hook
             $hooks = $GLOBALS['TL_HOOKS']['beforeAjaxAction'] ?? null;
-            if (is_array($hooks))
-            {
+            if (is_array($hooks)) {
                 foreach ($hooks as $callback) {
                     if (is_array($callback)) {
                         $callbackObj = System::importStatic($callback[0]);
@@ -105,7 +100,7 @@ class AjaxManager
                 default => null,
             };
 
-            if ($error !== null) {
+            if (null !== $error) {
                 $this->sendResponseError($error);
                 $this->exit();
             }
@@ -153,7 +148,7 @@ class AjaxManager
     /**
      * Get the active ajax action object.
      *
-     * @param string $groupRequested Requested ajax group
+     * @param string $groupRequested  Requested ajax group
      * @param string $actionRequested Requested ajax action within group
      *
      * @return AjaxActionManager|int|null A valid AjaxAction | null if the action is not a registered ajax action
@@ -202,8 +197,7 @@ class AjaxManager
         // ajax request token check
         if (isset($arrAttributes['csrf_protection'])
             && $arrAttributes['csrf_protection']
-            && (!$strToken || !System::getContainer()->get('huh.ajax.token')->validate($strToken)))
-        {
+            && (!$strToken || !System::getContainer()->get('huh.ajax.token')->validate($strToken))) {
             return static::AJAX_ERROR_INVALID_TOKEN;
         }
 
@@ -229,6 +223,7 @@ class AjaxManager
     public function isRequestTokenExpired(): bool
     {
         $request = $this->requestStack->getCurrentRequest();
+
         return $this->scopeMatcher->isFrontendRequest($request)
             && $request->isXmlHttpRequest()
             && Input::post('REQUEST_TOKEN_EXPIRED');

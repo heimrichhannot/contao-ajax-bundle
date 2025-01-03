@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Contao Open Source CMS
+ * Contao Open Source CMS.
  *
  * Copyright (c) 2016 Heimrich & Hannot GmbH
  *
@@ -8,7 +9,7 @@
  * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
  */
 
-/**
+/*
  * Ajax Actions
  */
 if (!isset($GLOBALS['AJAX'])) {

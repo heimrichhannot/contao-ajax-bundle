@@ -13,9 +13,6 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class HeimrichHannotContaoAjaxBundle extends Bundle
 {
-    /**
-     * @return AjaxExtension
-     */
     public function getContainerExtension(): AjaxExtension
     {
         return new AjaxExtension();

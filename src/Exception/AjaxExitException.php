@@ -10,5 +10,5 @@ namespace HeimrichHannot\AjaxBundle\Exception;
 
 class AjaxExitException extends \Exception
 {
-    const CODE_NORMAL_EXIT = 1;
+    public const CODE_NORMAL_EXIT = 1;
 }

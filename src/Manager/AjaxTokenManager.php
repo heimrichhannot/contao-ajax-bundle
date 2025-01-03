@@ -26,7 +26,7 @@ class AjaxTokenManager
      */
     public function __construct(
         RequestStack $requestStack,
-        private Utils $utils
+        private Utils $utils,
     ) {
         $this->session = $requestStack->getSession();
         $this->tokens = $this->session->get(static::SESSION_KEY) ?? [];
@@ -50,8 +50,6 @@ class AjaxTokenManager
 
     /**
      * Remove a used token.
-     *
-     * @param $token
      */
     public function remove(string $token): void
     {
@@ -110,7 +108,7 @@ class AjaxTokenManager
 
             if ($strHostname) {
                 foreach (Config::get('requestTokenWhitelist') as $strDomain) {
-                    if ($strDomain === $strHostname || preg_match('/\.'.preg_quote($strDomain, '/').'$/', $strHostname)) {
+                    if ($strDomain === $strHostname || preg_match('/\.' . preg_quote($strDomain, '/') . '$/', $strHostname)) {
                         return true;
                     }
                 }

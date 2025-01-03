@@ -11,12 +11,9 @@ namespace HeimrichHannot\AjaxBundle\Response;
 use Contao\System;
 use HeimrichHannot\AjaxBundle\Exception\AjaxExitException;
 use HeimrichHannot\AjaxBundle\Manager\AjaxManager;
-use JsonSerializable;
-use ReturnTypeWillChange;
-use stdClass;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-abstract class Response extends JsonResponse implements JsonSerializable
+abstract class Response extends JsonResponse implements \JsonSerializable
 {
     protected ?ResponseData $result = null;
 
@@ -36,25 +33,16 @@ abstract class Response extends JsonResponse implements JsonSerializable
         }
     }
 
-    /**
-     * @return ResponseData
-     */
     public function getResult(): ?ResponseData
     {
         return $this->result ?? new ResponseData();
     }
 
-    /**
-     * @param ResponseData $result
-     */
     public function setResult(ResponseData $result): void
     {
         $this->result = $result;
     }
 
-    /**
-     * @return mixed
-     */
     public function getMessage(): mixed
     {
         return $this->message;
@@ -65,25 +53,17 @@ abstract class Response extends JsonResponse implements JsonSerializable
         $this->message = $message;
     }
 
-    /**
-     * @return string
-     */
     public function getToken(): string
     {
         return $this->token;
     }
 
-    /**
-     * @return array
-     */
-    #[ReturnTypeWillChange] public function jsonSerialize(): array
+    #[\ReturnTypeWillChange]
+    public function jsonSerialize(): array
     {
         return get_object_vars($this);
     }
 
-    /**
-     * @param bool $close
-     */
     public function setCloseModal(bool $close = false): void
     {
         $objResult = $this->getResult();
@@ -93,9 +73,6 @@ abstract class Response extends JsonResponse implements JsonSerializable
         $this->setResult($objResult);
     }
 
-    /**
-     * @param string $url
-     */
     public function setUrl(string $url): void
     {
         $objResult = $this->getResult();
@@ -105,12 +82,9 @@ abstract class Response extends JsonResponse implements JsonSerializable
         $this->setResult($objResult);
     }
 
-    /**
-     * @return stdClass
-     */
-    public function getOutputData(): stdClass
+    public function getOutputData(): \stdClass
     {
-        $objOutput = new stdClass();
+        $objOutput = new \stdClass();
         $objOutput->result = $this->result;
         $objOutput->message = $this->message;
         $objOutput->token = $this->token;
@@ -148,9 +122,9 @@ abstract class Response extends JsonResponse implements JsonSerializable
     }
 
     /**
-     * @throws AjaxExitException
-     *
      * @return JsonResponse
+     *
+     * @throws AjaxExitException
      */
     public function send(): static
     {

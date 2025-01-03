@@ -17,12 +17,14 @@ use Symfony\Component\HttpFoundation\Request;
 class AjaxActionManager
 {
     /**
-     * AjaxAction constructor.
-     *
      * @param null $strToken
      */
-    public function __construct(protected string $strGroup = '', protected string $strAction = '', protected array $arrAttributes = [], protected ?string $strToken = null)
-    {
+    public function __construct(
+        protected string $strGroup = '',
+        protected string $strAction = '',
+        protected array $arrAttributes = [],
+        protected ?string $strToken = null,
+    ) {
     }
 
     public function removeAjaxParametersFromUrl(string $url): ?string
@@ -31,6 +33,7 @@ class AjaxActionManager
             $url = System::getContainer()->get(Utils::class)->url()
                 ->removeQueryStringParameterFromUrl($attribute, $url);
         }
+
         return $url;
     }
 
@@ -39,7 +42,7 @@ class AjaxActionManager
         ?string $action = null,
         array $attributes = [],
         bool $keepParams = true,
-        ?string $url = null
+        ?string $url = null,
     ): ?string {
         /* @var PageModel $objPage */
         global $objPage;
@@ -48,7 +51,7 @@ class AjaxActionManager
             $url = $keepParams ? null : $objPage->getFrontendUrl();
         }
 
-        # todo: modernize, getFrontendUrl is deprecated
+        // todo: modernize, getFrontendUrl is deprecated
 
         /** @var Utils $utils */
         $utils = System::getContainer()->get(Utils::class);
@@ -89,11 +92,6 @@ class AjaxActionManager
         return $arrParams;
     }
 
-    /**
-     * @param $objContext
-     *
-     * @return mixed
-     */
     public function call($objContext)
     {
         $objItem = null;
@@ -140,11 +138,10 @@ class AjaxActionManager
                 continue;
             }
 
-            if (count(preg_grep('/'.$argument.'/i', $arrOptional)) < 1
-                && count(preg_grep('/'.$argument.'/i', array_keys($arrCurrentArguments))) < 1)
-            {
-                System::getContainer()->get(AjaxManager::class)->sendResponseError('Bad Request, missing argument '.$argument);
-                throw new AjaxExitException('Bad Request, missing argument '.$argument);
+            if (count(preg_grep('/' . $argument . '/i', $arrOptional)) < 1
+                && count(preg_grep('/' . $argument . '/i', array_keys($arrCurrentArguments))) < 1) {
+                System::getContainer()->get(AjaxManager::class)->sendResponseError('Bad Request, missing argument ' . $argument);
+                throw new AjaxExitException('Bad Request, missing argument ' . $argument);
             }
 
             $varValue = $request->isMethod(Request::METHOD_POST) ? $request->request->get($argument) : $request->query->get($argument);

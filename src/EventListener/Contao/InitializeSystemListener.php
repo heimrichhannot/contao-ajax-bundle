@@ -13,9 +13,13 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 #[AsHook('initializeSystem')]
 class InitializeSystemListener
 {
-
-    public function __construct(private RequestStack $requestStack, private ScopeMatcher $scopeMatcher, private CsrfTokenManagerInterface $tokenManager, private ParameterBagInterface $parameterBag, private AjaxManager $ajaxManager)
-    {
+    public function __construct(
+        private RequestStack $requestStack,
+        private ScopeMatcher $scopeMatcher,
+        private CsrfTokenManagerInterface $tokenManager,
+        private ParameterBagInterface $parameterBag,
+        private AjaxManager $ajaxManager,
+    ) {
     }
 
     public function __invoke(): void

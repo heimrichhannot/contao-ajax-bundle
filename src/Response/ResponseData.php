@@ -8,37 +8,28 @@
 
 namespace HeimrichHannot\AjaxBundle\Response;
 
-use JsonSerializable;
-
-class ResponseData implements JsonSerializable
+class ResponseData implements \JsonSerializable
 {
     /**
      * @param mixed[] $data
-     * @param string $html
+     * @param string  $html
      */
-    public function __construct(protected mixed $html = '', protected array $data = [])
-    {
+    public function __construct(
+        protected mixed $html = '',
+        protected array $data = [],
+    ) {
     }
 
-    /**
-     * @return array
-     */
     public function getData(): array
     {
         return $this->data;
     }
 
-    /**
-     * @param array $data
-     */
     public function setData(array $data): void
     {
         $this->data = $data;
     }
 
-    /**
-     * @return mixed
-     */
     public function getHtml(): mixed
     {
         return $this->html;
@@ -49,9 +40,6 @@ class ResponseData implements JsonSerializable
         $this->html = $html;
     }
 
-    /**
-     * @return array
-     */
     public function jsonSerialize(): array
     {
         return get_object_vars($this);
