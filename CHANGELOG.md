@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.5.1] - 2025-01-03
+- Fixed: deprecations ([#4](https://github.com/heimrichhannot/contao-ajax-bundle/issues/4))
+
 ## [1.5.0] - 2024-03-28
 - Changed: improved support for contao 5
 - Changed: improved PHP 8 compatibility
