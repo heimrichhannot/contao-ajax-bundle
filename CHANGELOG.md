@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.5.2] - 2026-03-18
+- Changed: allow symfony 7
+
 ## [1.5.1] - 2025-01-03
 - Fixed: deprecations ([#4](https://github.com/heimrichhannot/contao-ajax-bundle/issues/4))
 
