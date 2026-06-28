@@ -126,12 +126,12 @@ abstract class Response extends JsonResponse implements \JsonSerializable
      *
      * @throws AjaxExitException
      */
-    public function send(): static
+    public function send(bool $flush = true): static
     {
         if (defined('UNIT_TESTING')) {
             throw new AjaxExitException(json_encode($this), AjaxExitException::CODE_NORMAL_EXIT);
         }
 
-        return parent::send();
+        return parent::send($flush);
     }
 }
