@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.5.3] - 2026-07-24
+- Fixed: compatibility with symfony 7
+
 ## [1.5.2] - 2026-03-18
 - Changed: allow symfony 7
 
