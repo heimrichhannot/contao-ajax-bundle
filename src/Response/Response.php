@@ -132,6 +132,6 @@ abstract class Response extends JsonResponse implements \JsonSerializable
             throw new AjaxExitException(json_encode($this), AjaxExitException::CODE_NORMAL_EXIT);
         }
 
-        return parent::send();
+        return parent::send($flush);
     }
 }
